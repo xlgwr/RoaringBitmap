@@ -1,26 +1,22 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		
+		<TargetFrameworks>net7.0</TargetFrameworks>
+		<Version>0.9.1</Version>
 
-  <PropertyGroup>
-    <TargetFramework>netstandard1.1</TargetFramework>
-    <PackageProjectUrl>https://github.com/Tornhoof/RoaringBitmap</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/Tornhoof/RoaringBitmap/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageTags>RoaringBitmap</PackageTags>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <RepositoryUrl>https://github.com/Tornhoof/RoaringBitmap</RepositoryUrl>
-    <Version>0.9.1</Version>
-    <Description>RoaringBitmap for .NET</Description>
-    <Authors>RoaringBitmap Contributors</Authors>
-    <Copyright>Copyright © RoaringBitmap Contributors 2017</Copyright>
-    <Product>Roaring Bitmap</Product>
-    <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="System.Collections" Version="4.3.0" />
-    <PackageReference Include="System.Linq" Version="4.3.0" />
-    <PackageReference Include="System.Runtime" Version="4.3.0" />
-    <PackageReference Include="System.Runtime.Extensions" Version="4.3.0" />
-    <PackageReference Include="System.Runtime.InteropServices" Version="4.3.0" />
-  </ItemGroup>
-
+	</PropertyGroup>
+	<PropertyGroup>
+		
+		<PackageProjectUrl>https://github.com/Tornhoof/RoaringBitmap</PackageProjectUrl>
+		<PackageLicenseUrl>https://github.com/Tornhoof/RoaringBitmap/blob/master/LICENSE</PackageLicenseUrl>
+		<PackageTags>RoaringBitmap</PackageTags>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<RepositoryUrl>https://github.com/Tornhoof/RoaringBitmap</RepositoryUrl>
+		<Description>RoaringBitmap for .NET</Description>
+		<Authors>RoaringBitmap Contributors</Authors>
+		<Copyright>Copyright © RoaringBitmap Contributors 2017</Copyright>
+		<Product>Roaring Bitmap</Product>
+		
+	</PropertyGroup>
 </Project>
