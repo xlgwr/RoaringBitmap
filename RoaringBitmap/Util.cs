@@ -19,7 +19,7 @@ namespace Collections.Special
             x -= (x >> 1) & 0x5555555555555555UL; //put count of each 2 bits into those 2 bits
             x = (x & 0x3333333333333333UL) + ((x >> 2) & 0x3333333333333333UL); //put count of each 4 bits into those 4 bits 
             x = (x + (x >> 4)) & 0x0F0F0F0F0F0F0F0FUL; //put count of each 8 bits into those 8 bits 
-            return (int) ((x * 0x0101010101010101UL) >> 56); //returns left 8 bits of x + (x<<8) + (x<<16) + (x<<24) + ... 
+            return (int)((x * 0x0101010101010101UL) >> 56); //returns left 8 bits of x + (x<<8) + (x<<16) + (x<<24) + ... 
         }
 
         /// <summary>
@@ -305,17 +305,26 @@ namespace Collections.Special
             var result = Array.BinarySearch(array, start, length - start, min);
             return result < 0 ? ~result : result;
         }
-
+        public static int GetIndex(ushort[] array, ushort min, int pos = 0)
+        {
+            if (pos < 0)
+            {
+                pos = 0;
+            }
+            if (pos > array.Length) return -1;
+            var result = Array.BinarySearch(array, pos, array.Length - pos, min);
+            return result;
+        }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ushort HighBits(int value)
         {
-            return (ushort) (value >> 16);
+            return (ushort)(value >> 16);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ushort LowBits(int value)
         {
-            return (ushort) (value & 0xFFFF);
+            return (ushort)(value & 0xFFFF);
         }
 
         public static int XorArrays(ushort[] set1, int length1, ushort[] set2, int length2, ushort[] buffer)

@@ -20,9 +20,11 @@ namespace RoaringBitmap.Tests.Tests
         [TestMethod()]
         public void TestContains()
         {
-            var list = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 65533 };
+            var list = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 65533, 65577 };
             var rb = Collections.Special.RoaringBitmap.Create(list, Collections.Special.ContainerType.BitmapContainer);
             Assert.IsTrue(rb.Contains(65533));
+            Assert.IsTrue(rb.Contains(65577));
+            Assert.IsTrue(!rb.Contains(65597*2));
         }
     }
 }

@@ -68,12 +68,12 @@ namespace Collections.Special
         {
             var HighBits = Util.HighBits(v);
             var LowBits = Util.LowBits(v);
-            var index = AdvanceUntil(HighBits, 0);
-            if (index <= 0)
+            var index = GetIndex(HighBits);
+            if (index < 0)
             {
                 return false;
             }
-            return m_Values[index - 1].Contains(LowBits);
+            return m_Values[index].Contains(LowBits);
         }
         public bool Equals(RoaringArray other)
         {
@@ -102,6 +102,10 @@ namespace Collections.Special
         private int AdvanceUntil(ushort key, int index)
         {
             return Util.AdvanceUntil(m_Keys, index, m_Keys.Length, key);
+        }
+        private int GetIndex(ushort key, int index = 0)
+        {
+            return Util.GetIndex(m_Keys, key, index);
         }
 
         public static RoaringArray operator |(RoaringArray x, RoaringArray y)
