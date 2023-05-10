@@ -77,14 +77,13 @@ namespace Collections.Special
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Contains(int v, int hightIndex = -1)
         {
-            var HighBits = Util.HighBits(v);
-            var LowBits = Util.LowBits(v);
-            var index = hightIndex > 0 ? hightIndex : GetIndex(HighBits);
+            var tmpLowHighBits = v.LowHighBits();
+            var index = hightIndex > 0 ? hightIndex : GetIndex(tmpLowHighBits.Item2);
             if (index < 0)
             {
                 return false;
             }
-            return m_Values[index].Contains(LowBits);
+            return m_Values[index].Contains(tmpLowHighBits.Item1);
         }
         #region Base method
         public bool Equals(RoaringArray other)
