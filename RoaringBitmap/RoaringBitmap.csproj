@@ -9,7 +9,7 @@
 	<PropertyGroup>
 		
 		<PackageProjectUrl>https://github.com/xlgwr/RoaringBitmap</PackageProjectUrl>
-		<PackageLicenseUrl>https://github.com/xlgwr/RoaringBitmap/blob/master/LICENSE</PackageLicenseUrl>
+		<PackageLicense>https://github.com/xlgwr/RoaringBitmap/blob/master/LICENSE</PackageLicense>
 		<PackageTags>RoaringBitmap</PackageTags>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<RepositoryUrl>https://github.com/xlgwr/RoaringBitmap</RepositoryUrl>
