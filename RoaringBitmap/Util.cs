@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace Collections.Special
+namespace System.Collections.Generic.Special
 {
     /// <summary>
     ///     Pretty much everything in here are straight conversions from the original Util class in the java Roaring Bitmap

@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace Collections.Special
+namespace System.Collections.Generic.Special
 {
-    public class RoaringBitmap : IEnumerable<int>, IEquatable<RoaringBitmap>
+    public class RoaringBitmap : SimpleRoaringBitmap, IEnumerable<int>, IEquatable<RoaringBitmap>
     {
         private readonly RoaringArray m_HighLowContainer;
 
-        private RoaringBitmap(RoaringArray input)
+        private RoaringBitmap(RoaringArray input) : base(input)
         {
             m_HighLowContainer = input;
         }
@@ -126,10 +126,7 @@ namespace Collections.Special
             }
             return new RoaringBitmap(new RoaringArray(size, keys, containers));
         }
-        public static RoaringBitmap Create(ContainerType containerType, int size = 0)
-        {
-            return new RoaringBitmap(new RoaringArray(containerType, size));
-        }
+
         /// <summary>
         ///     Bitwise Or operation of two RoaringBitmaps
         /// </summary>
@@ -195,26 +192,6 @@ namespace Collections.Special
             return (13 ^ m_HighLowContainer.GetHashCode()) << 3;
         }
 
-        public bool Contains(int v, int hightIndex = -1)
-        {
-            return m_HighLowContainer.Contains(v, hightIndex);
-        }
-        #region Get Set
-        /// <summary>
-        /// 是否存在,
-        /// </summary>
-        /// <param name="v">查询值</param>
-        /// <param name="hightIndex">高位索引</param>
-        /// <returns></returns>
-        public bool Get(int v, int hightIndex = -1)
-        {
-            return m_HighLowContainer.Contains(v, hightIndex);
-        }
-        public void Set(int v)
-        {
-            m_HighLowContainer.Set(v);
-        }
-        #endregion
         /// <summary>
         ///     Serializes a RoaringBitmap into a stream using the 'official' RoaringBitmap file format
         /// </summary>

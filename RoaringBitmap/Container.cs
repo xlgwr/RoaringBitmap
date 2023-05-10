@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Collections.Special
+namespace System.Collections.Generic.Special
 {
-    internal abstract class Container : IEquatable<Container>
+    public abstract class Container : IEquatable<Container>
     {
         public const int MaxSize = 4096; // everything <= is an ArrayContainer
         public const int MaxCapacity = 1 << 16;

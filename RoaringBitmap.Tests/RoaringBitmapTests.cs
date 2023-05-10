@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Xunit;
+using Collections = System.Collections.Generic;
 
 namespace RoaringBitmap.Tests
 {
@@ -251,7 +252,7 @@ namespace RoaringBitmap.Tests
         [Fact]
         public void TestContains()
         {
-            var rb = Collections.Special.RoaringBitmap.Create(1, 2, 3, 4, 5, 6, 7, 8, 9, 10,65533); 
+            var rb = Collections.Special.RoaringBitmap.Create(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 65533);
             Assert.True(rb.Contains(65533));
         }
 

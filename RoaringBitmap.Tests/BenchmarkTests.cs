@@ -4,6 +4,7 @@ using System.Linq;
 using RoaringBitmap.Benchmark;
 using Xunit;
 using Xunit.Abstractions;
+using Collections = System.Collections.Generic;
 
 namespace RoaringBitmap.Tests
 {

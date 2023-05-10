@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
 
-namespace Collections.Special
+namespace System.Collections.Generic.Special
 {
     internal class BitmapContainer : Container, IEquatable<BitmapContainer>
     {

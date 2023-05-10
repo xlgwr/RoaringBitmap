@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
-namespace Collections.Special
+namespace System.Collections.Generic.Special
 {
     internal class ArrayContainer : Container, IEquatable<ArrayContainer>
     {
