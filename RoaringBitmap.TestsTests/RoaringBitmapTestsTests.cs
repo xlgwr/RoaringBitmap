@@ -97,7 +97,7 @@ namespace UnitTesting
             stopwatch.Stop();
             Msg($"{title}:ContainsKey", stopwatch.Elapsed); stopwatch.Restart();
 
-            var bitArr = new BitArray(size);
+            var bitArr = new BitArray(max);
             foreach (var item in list)
             {
                 bitArr[item] = true;
