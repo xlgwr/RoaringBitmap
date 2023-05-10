@@ -90,7 +90,7 @@ namespace UnitTesting
             Assert.IsTrue(!dic.ContainsKey(65597 * 2));
 
             stopwatch.Stop();
-            Msg("SimpleRoaringBitmap:Contains", stopwatch.Elapsed);
+            Msg("Dictionary:ContainsKey", stopwatch.Elapsed);
         }
         static void Msg(string msg, TimeSpan timeSpan, params object[] dd)
         {
