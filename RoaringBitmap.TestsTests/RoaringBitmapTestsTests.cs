@@ -105,7 +105,7 @@ namespace UnitTesting
 
             stopwatch.Stop();
             title = "BitArray";
-            Msg(title, stopwatch.Elapsed, "Count:", dic.Count);
+            Msg(title, stopwatch.Elapsed, "Count:", bitArr.Count);
             stopwatch.Restart();
 
             Assert.IsTrue(bitArr[65533]);
