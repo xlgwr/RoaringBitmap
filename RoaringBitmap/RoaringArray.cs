@@ -113,11 +113,11 @@ namespace Collections.Special
 
         private int AdvanceUntil(ushort key, int index)
         {
-            return Util.AdvanceUntil(m_Keys, index, m_Keys.Length, key);
+            return m_Keys.AdvanceUntil(index, m_Keys.Length, key);
         }
         private int GetIndex(ushort key, int index = 0)
         {
-            return Util.GetIndex(m_Keys, key, index);
+            return m_Keys.GetIndex(key, index);
         }
 
         public static RoaringArray operator |(RoaringArray x, RoaringArray y)
@@ -643,26 +643,26 @@ namespace Collections.Special
         }
         #endregion
         #region Resize
-       /// <summary>
-       /// 设置,动态扩展
-       /// </summary>
-       /// <param name="v"></param>
-       /// <returns>返回高位index</returns>
+        /// <summary>
+        /// 设置,动态扩展
+        /// </summary>
+        /// <param name="v"></param>
+        /// <returns>返回高位index</returns>
         public int Set(int v)
         {
-            var HighBits = Util.HighBits(v);
-            var LowBits = Util.LowBits(v);
-            var index = GetIndex(HighBits);
+            var tmpLowHighBits = v.LowHighBits();
+            //hight
+            var index = GetIndex(tmpLowHighBits.Item2);
             if (index < 0)
             {
                 //resize
-                return Resize(HighBits, LowBits);
+                return Resize(tmpLowHighBits.Item1, tmpLowHighBits.Item2);
             }
-            //符值
-            m_Values[index].Set(LowBits);
+            //符值 low
+            m_Values[index].Set(tmpLowHighBits.Item1);
             return index;
         }
-        int Resize(ushort h, ushort l)
+        int Resize(ushort l, ushort h)
         {
             int index = m_Keys.Length; ;
             //copy key

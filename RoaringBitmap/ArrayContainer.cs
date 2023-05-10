@@ -105,7 +105,7 @@ namespace Collections.Special
             }
 
             //计数
-            if (Get(x))
+            if (m_Content.Contains(x))
             {
                 m_Cardinality++;
             }

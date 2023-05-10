@@ -295,7 +295,7 @@ namespace Collections.Special
         ///     -> The first line is BinarySearch with pos + 1, the second line is the bitwise complement if the value can't be
         ///     found
         /// </summary>
-        public static int AdvanceUntil(ushort[] array, int pos, int length, ushort min)
+        public static int AdvanceUntil(this ushort[] array, int pos, int length, ushort min)
         {
             var start = pos + 1; // check the next one
             if ((start >= length) || (array[start] >= min)) // the simple cases
@@ -312,7 +312,7 @@ namespace Collections.Special
         /// <param name="min"></param>
         /// <param name="pos"></param>
         /// <returns></returns>
-        public static int GetIndex(ushort[] array, ushort min, int pos = 0)
+        public static int GetIndex(this ushort[] array, ushort min, int pos = 0)
         {
             if (array == null || array.Length <= 0 || pos > array.Length) return -1;
             if (pos < 0) pos = 0;
@@ -327,15 +327,27 @@ namespace Collections.Special
             return -1;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ushort HighBits(int value)
+        public static ushort HighBits(this int value)
         {
             return (ushort)(value >> 16);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ushort LowBits(int value)
+        public static ushort LowBits(this int value)
         {
             return (ushort)(value & 0xFFFF);
+        }
+
+        /// <summary>
+        /// item1:LowBits
+        /// item2:HighBits
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Tuple<ushort, ushort> LowHighBits(this int value)
+        {
+            return new Tuple<ushort, ushort>((ushort)(value & 0xFFFF), (ushort)(value >> 16));
         }
 
         public static int XorArrays(ushort[] set1, int length1, ushort[] set2, int length2, ushort[] buffer)
