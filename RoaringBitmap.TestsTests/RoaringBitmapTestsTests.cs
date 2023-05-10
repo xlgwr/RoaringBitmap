@@ -78,7 +78,7 @@ namespace UnitTesting
             var dic = new Dictionary<int, bool>();
             foreach (var item in list)
             {
-                dic.Add(item, true);
+                dic[item] = true;
             }
 
             stopwatch.Stop();
