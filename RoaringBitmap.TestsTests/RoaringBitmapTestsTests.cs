@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 using System.Collections.Generic.Special;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace UnitTesting
 {
@@ -44,20 +46,64 @@ namespace UnitTesting
         [TestMethod()]
         public void TestRandom()
         {
+            Stopwatch stopwatch = Stopwatch.StartNew();
             var max = 100_000_000;
-            var size = 1_000_000;
+            var size = 2_000_000;
             var random = new Random();
             var list = CreateRandomList(random, size, max);
             list.Add(65533);
             list.Add(65577);
+
+            stopwatch.Stop();
+            Msg("GenData", stopwatch.Elapsed, ",max:", max, ",size:", size);
+            stopwatch.Restart();
+
             var rb = SimpleRoaringBitmap.Create(ContainerType.BitmapContainer, (max >> 16) + 1);
             foreach (var item in list)
             {
                 rb.Set(item);
             }
+
+            stopwatch.Stop();
+            Msg("SimpleRoaringBitmap", stopwatch.Elapsed);
+            stopwatch.Restart();
+
             Assert.IsTrue(rb.Contains(65533));
             Assert.IsTrue(rb.Contains(65577));
             Assert.IsTrue(!rb.Contains(65597 * 2));
+
+            stopwatch.Stop();
+            Msg("SimpleRoaringBitmap:Contains", stopwatch.Elapsed);
+
+            var dic = new Dictionary<int, bool>();
+            foreach (var item in list)
+            {
+                dic.Add(item, true);
+            }
+
+            stopwatch.Stop();
+            Msg("Dictionary", stopwatch.Elapsed, "Count:", dic.Count);
+            stopwatch.Restart();
+
+            Assert.IsTrue(dic.ContainsKey(65533));
+            Assert.IsTrue(dic.ContainsKey(65577));
+            Assert.IsTrue(!dic.ContainsKey(65597 * 2));
+
+            stopwatch.Stop();
+            Msg("SimpleRoaringBitmap:Contains", stopwatch.Elapsed);
+        }
+        static void Msg(string msg, TimeSpan timeSpan, params object[] dd)
+        {
+            Console.WriteLine($"{msg}:{timeSpan},Other:{toStr(dd)}");
+        }
+        static string toStr(object[] dd)
+        {
+            string str = string.Empty;
+            foreach (var item in dd)
+            {
+                str += item.ToString();
+            }
+            return str;
         }
         #region other method
         private static List<int> CreateRandomList(Random random, int size, int maxValue = int.MaxValue)
