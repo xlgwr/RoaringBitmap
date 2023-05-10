@@ -126,7 +126,10 @@ namespace Collections.Special
             }
             return new RoaringBitmap(new RoaringArray(size, keys, containers));
         }
-
+        public static RoaringBitmap Create(ContainerType containerType, int size = 0)
+        {
+            return new RoaringBitmap(new RoaringArray(containerType, size));
+        }
         /// <summary>
         ///     Bitwise Or operation of two RoaringBitmaps
         /// </summary>
@@ -196,6 +199,16 @@ namespace Collections.Special
         {
             return m_HighLowContainer.Contains(v);
         }
+        #region Get Set
+        public bool Get(int v)
+        {
+            return m_HighLowContainer.Contains(v);
+        }
+        public void Set(int v)
+        {
+            m_HighLowContainer.Set(v);
+        }
+        #endregion
         /// <summary>
         ///     Serializes a RoaringBitmap into a stream using the 'official' RoaringBitmap file format
         /// </summary>

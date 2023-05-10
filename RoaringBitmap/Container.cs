@@ -26,6 +26,8 @@ namespace Collections.Special
         }
         protected abstract bool EqualsInternal(Container other);
         public abstract bool Contains(ushort x);
+        public abstract bool Get(ushort x);
+        public abstract void Set(ushort x, bool value = true);
 
         public abstract IEnumerator<ushort> GetEnumerator();
 

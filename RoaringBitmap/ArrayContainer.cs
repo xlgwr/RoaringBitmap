@@ -9,8 +9,8 @@ namespace Collections.Special
     internal class ArrayContainer : Container, IEquatable<ArrayContainer>
     {
         public static readonly ArrayContainer One;
-        private readonly int m_Cardinality;
         private readonly ushort[] m_Content;
+        private int m_Cardinality;
 
         static ArrayContainer()
         {
@@ -20,6 +20,13 @@ namespace Collections.Special
                 data[i] = i;
             }
             One = new ArrayContainer(MaxSize, data);
+        }
+
+        private ArrayContainer(ushort data)
+        {
+            m_Content = new ushort[MaxSize];
+            m_Content[0] = data;
+            m_Cardinality = MaxSize;
         }
 
         private ArrayContainer(int cardinality, ushort[] data)
@@ -56,7 +63,10 @@ namespace Collections.Special
             }
             return true;
         }
-
+        internal static ArrayContainer Create(ushort v)
+        {
+            return new ArrayContainer(v);
+        }
         internal static ArrayContainer Create(ushort[] values)
         {
             return new ArrayContainer(values.Length, values);
@@ -68,6 +78,41 @@ namespace Collections.Special
             var cardinality = bc.FillArray(data);
             var result = new ArrayContainer(cardinality, data);
             return result;
+        }
+
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override bool Get(ushort x)
+        {
+            return m_Content.Contains(x);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override void Set(ushort x, bool value = true)
+        {
+            var index = Util.GetIndex(m_Content, x);
+            if (index < 0)
+            {
+                return;
+            }
+            if (value)
+            {
+                m_Content[index] = x;
+            }
+            else
+            {
+                m_Content[index] = 0;
+            }
+
+            //计数
+            if (Get(x))
+            {
+                m_Cardinality++;
+            }
+            else
+            {
+                m_Cardinality--;
+            }
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override bool Contains(ushort x)
@@ -200,7 +245,7 @@ namespace Collections.Special
                 var previous = bitmap[index];
                 var after = previous | (1UL << yValue);
                 bitmap[index] = after;
-                extraCardinality += (int) ((previous - after) >> 63);
+                extraCardinality += (int)((previous - after) >> 63);
             }
             return extraCardinality;
         }
@@ -216,7 +261,7 @@ namespace Collections.Special
                 var previous = bitmap[index];
                 var mask = 1UL << yValue;
                 bitmap[index] = previous ^ mask;
-                extraCardinality += (int) (1 - 2 * ((previous & mask) >> yValue));
+                extraCardinality += (int)(1 - 2 * ((previous & mask) >> yValue));
             }
             return extraCardinality;
         }
@@ -233,7 +278,7 @@ namespace Collections.Special
                 var previous = bitmap[index];
                 var after = previous & ~(1UL << yValue);
                 bitmap[index] = after;
-                extraCardinality -= (int) ((previous ^ after) >> yValue);
+                extraCardinality -= (int)((previous ^ after) >> yValue);
             }
             return extraCardinality;
         }

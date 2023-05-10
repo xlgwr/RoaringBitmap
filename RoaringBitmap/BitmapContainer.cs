@@ -10,7 +10,7 @@ namespace Collections.Special
         private const int BitmapLength = 1024;
         public static readonly BitmapContainer One;
         private readonly ulong[] m_Bitmap;
-        private readonly int m_Cardinality;
+        private int m_Cardinality;
 
         static BitmapContainer()
         {
@@ -20,6 +20,13 @@ namespace Collections.Special
                 data[i] = ulong.MaxValue;
             }
             One = new BitmapContainer(1 << 16, data);
+        }
+        private BitmapContainer(ushort v)
+        {
+            m_Bitmap = new ulong[BitmapLength];
+            m_Cardinality = 1;
+            m_Bitmap[v >> 6] = 1UL << v;
+
         }
 
         private BitmapContainer(int cardinality)
@@ -85,7 +92,10 @@ namespace Collections.Special
             }
             return true;
         }
-
+        internal static BitmapContainer Create(ushort v)
+        {
+            return new BitmapContainer(v);
+        }
 
         internal static BitmapContainer Create(ushort[] values)
         {
@@ -129,7 +139,7 @@ namespace Collections.Special
         {
             var data = Clone(x.m_Bitmap);
             var bc = new BitmapContainer(AndInternal(data, y.m_Bitmap), data);
-            return bc.m_Cardinality <= MaxSize ? (Container) ArrayContainer.Create(bc) : bc;
+            return bc.m_Cardinality <= MaxSize ? (Container)ArrayContainer.Create(bc) : bc;
         }
 
         private static ulong[] Clone(ulong[] data)
@@ -160,7 +170,7 @@ namespace Collections.Special
         {
             var data = Clone(x.m_Bitmap);
             var bc = new BitmapContainer(NotInternal(data), data);
-            return bc.m_Cardinality <= MaxSize ? (Container) ArrayContainer.Create(bc) : bc;
+            return bc.m_Cardinality <= MaxSize ? (Container)ArrayContainer.Create(bc) : bc;
         }
 
         /// <summary>
@@ -171,7 +181,7 @@ namespace Collections.Special
         {
             var data = Clone(x.m_Bitmap);
             var bc = new BitmapContainer(XorInternal(data, y.m_Bitmap), data);
-            return bc.m_Cardinality <= MaxSize ? (Container) ArrayContainer.Create(bc) : bc;
+            return bc.m_Cardinality <= MaxSize ? (Container)ArrayContainer.Create(bc) : bc;
         }
 
 
@@ -179,21 +189,21 @@ namespace Collections.Special
         {
             var data = Clone(x.m_Bitmap);
             var bc = new BitmapContainer(x.m_Cardinality + y.XorArray(data), data);
-            return bc.m_Cardinality <= MaxSize ? (Container) ArrayContainer.Create(bc) : bc;
+            return bc.m_Cardinality <= MaxSize ? (Container)ArrayContainer.Create(bc) : bc;
         }
 
         public static Container AndNot(BitmapContainer x, BitmapContainer y)
         {
             var data = Clone(x.m_Bitmap);
             var bc = new BitmapContainer(AndNotInternal(data, y.m_Bitmap), data);
-            return bc.m_Cardinality <= MaxSize ? (Container) ArrayContainer.Create(bc) : bc;
+            return bc.m_Cardinality <= MaxSize ? (Container)ArrayContainer.Create(bc) : bc;
         }
 
         public static Container AndNot(BitmapContainer x, ArrayContainer y)
         {
             var data = Clone(x.m_Bitmap);
             var bc = new BitmapContainer(x.m_Cardinality + y.AndNotArray(data), data);
-            return bc.m_Cardinality <= MaxSize ? (Container) ArrayContainer.Create(bc) : bc;
+            return bc.m_Cardinality <= MaxSize ? (Container)ArrayContainer.Create(bc) : bc;
         }
 
         private static int XorInternal(ulong[] first, ulong[] second)
@@ -247,6 +257,36 @@ namespace Collections.Special
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override bool Get(ushort x)
+        {
+            return (m_Bitmap[x >> 6] & (1UL << x)) != 0;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override void Set(ushort v, bool value = true)
+        {
+            //值
+            if (value)
+            {
+                m_Bitmap[v >> 6] |= 1UL << v;
+            }
+            else
+            {
+                m_Bitmap[v >> 6] ^= 1UL << v;
+            }
+
+            //计数
+            if (Get(v))
+            {
+                m_Cardinality++;
+            }
+            else
+            {
+                m_Cardinality--;
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override bool Contains(ushort x)
         {
             return Contains(m_Bitmap, x);
@@ -273,7 +313,7 @@ namespace Collections.Special
                 while (bitset != 0)
                 {
                     var t = bitset & (~bitset + 1);
-                    var result = (ushort) (shiftedK + Util.BitCount(t - 1));
+                    var result = (ushort)(shiftedK + Util.BitCount(t - 1));
                     yield return result;
                     bitset ^= t;
                 }
@@ -290,7 +330,7 @@ namespace Collections.Special
                 while (bitset != 0)
                 {
                     var t = bitset & (~bitset + 1);
-                    data[pos++] = (ushort) (shiftedK + Util.BitCount(t - 1));
+                    data[pos++] = (ushort)(shiftedK + Util.BitCount(t - 1));
                     bitset ^= t;
                 }
             }
@@ -334,5 +374,7 @@ namespace Collections.Special
             }
             return new BitmapContainer(cardinality, data);
         }
+
+
     }
 }

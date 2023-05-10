@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Runtime.CompilerServices;
 
 namespace Collections.Special
@@ -307,11 +308,9 @@ namespace Collections.Special
         }
         public static int GetIndex(ushort[] array, ushort min, int pos = 0)
         {
-            if (pos < 0)
-            {
-                pos = 0;
-            }
-            if (pos > array.Length) return -1;
+            if (array == null || array.Length <= 0 || pos > array.Length) return -1;
+            if (pos < 0) pos = 0;
+
             var result = Array.BinarySearch(array, pos, array.Length - pos, min);
             return result;
         }

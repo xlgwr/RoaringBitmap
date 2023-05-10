@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Collections.Special
@@ -11,10 +12,21 @@ namespace Collections.Special
         private const int SerialCookieNoRuncontainer = 12346;
         private const int SerialCookie = 12347;
         private const int NoOffsetThreshold = 4;
-        private readonly ushort[] m_Keys;
-        private readonly int m_Size;
-        private readonly Container[] m_Values;
+        private ushort[] m_Keys;
+        private int m_Size;
+        private Container[] m_Values;
+        private readonly ContainerType containerType;
 
+        internal RoaringArray(ContainerType containerType, int size = 0)
+        {
+            m_Size = size;
+            if (size > 0)
+            {
+                m_Keys = new ushort[m_Size];
+                m_Values = new Container[m_Size];
+            }
+            this.containerType = containerType;
+        }
 
         // ReSharper disable once SuggestBaseTypeForParameter
         /// <summary>
@@ -64,6 +76,8 @@ namespace Collections.Special
         {
             return GetEnumerator();
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Contains(int v)
         {
             var HighBits = Util.HighBits(v);
@@ -75,6 +89,7 @@ namespace Collections.Special
             }
             return m_Values[index].Contains(LowBits);
         }
+        #region Base method
         public bool Equals(RoaringArray other)
         {
             if (ReferenceEquals(this, other))
@@ -629,5 +644,66 @@ namespace Collections.Special
             }
             return new RoaringArray(roaringArray.m_Size, keys, containers);
         }
+        #endregion
+        #region Resize
+        /// <summary>
+        /// 不存在就扩大
+        /// </summary>
+        /// <param name="value"></param>
+        public void Set(int v)
+        {
+            var HighBits = Util.HighBits(v);
+            var LowBits = Util.LowBits(v);
+            var index = GetIndex(HighBits);
+            if (index < 0)
+            {
+                //resize
+                Resize(HighBits, LowBits);
+                return;
+            }
+            //符值
+            m_Values[index].Set(LowBits);
+        }
+        void Resize(ushort h, ushort l)
+        {
+            //copy key
+            ushort[] copy_Keys = new ushort[m_Keys.Length + 1];
+            m_Keys.CopyTo(copy_Keys, 0);
+
+            //set HighBits
+            copy_Keys[m_Keys.Length] = h;
+
+            m_Keys = copy_Keys;
+
+            //copy value
+            Container[] copy_value = new Container[m_Values.Length + 1];
+            m_Values.CopyTo(copy_value, 0);
+
+            Container newContainer;
+            switch (containerType)
+            {
+                default:
+                case ContainerType.BitmapContainer:
+                    newContainer = BitmapContainer.Create(l);
+                    break;
+                case ContainerType.ArrayContainer:
+                    newContainer = ArrayContainer.Create(l);
+                    break;
+            }
+
+            //setValue
+            copy_value[m_Values.Length] = newContainer;
+
+            m_Values = copy_value;
+
+            //set null
+            copy_Keys = null;
+            copy_value = null;
+
+            //set size
+            m_Size++;
+
+        }
+        #endregion
     }
 }
