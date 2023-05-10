@@ -20,11 +20,8 @@ namespace Collections.Special
         internal RoaringArray(ContainerType containerType, int size = 0)
         {
             m_Size = size;
-            if (size > 0)
-            {
-                m_Keys = new ushort[m_Size];
-                m_Values = new Container[m_Size];
-            }
+            m_Keys = new ushort[m_Size];
+            m_Values = new Container[m_Size];
             this.containerType = containerType;
         }
 
@@ -668,17 +665,17 @@ namespace Collections.Special
         {
             //copy key
             ushort[] copy_Keys = new ushort[m_Keys.Length + 1];
-            m_Keys.CopyTo(copy_Keys, 0);
-
-            //set HighBits
-            copy_Keys[m_Keys.Length] = h;
-
-            m_Keys = copy_Keys;
-
             //copy value
             Container[] copy_value = new Container[m_Values.Length + 1];
-            m_Values.CopyTo(copy_value, 0);
 
+            //copy to
+            if (m_Keys.Length > 0)
+            {
+                m_Keys.CopyTo(copy_Keys, 0);
+                m_Values.CopyTo(copy_value, 0);
+            }
+
+            #region Container
             Container newContainer;
             switch (containerType)
             {
@@ -690,13 +687,18 @@ namespace Collections.Special
                     newContainer = ArrayContainer.Create(l);
                     break;
             }
+            #endregion
 
+            //set HighBits
+            copy_Keys[m_Keys.Length] = h;
             //setValue
             copy_value[m_Values.Length] = newContainer;
 
+            //更新引用
+            m_Keys = copy_Keys;
             m_Values = copy_value;
 
-            //set null
+            //set null copy
             copy_Keys = null;
             copy_value = null;
 
