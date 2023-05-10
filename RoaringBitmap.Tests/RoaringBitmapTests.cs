@@ -248,6 +248,12 @@ namespace RoaringBitmap.Tests
             var rb2 = Collections.Special.RoaringBitmap.Create(Enumerable.Range(1, 10));
             Assert.Equal(rb, rb2);
         }
+        [Fact]
+        public void TestContains()
+        {
+            var rb = Collections.Special.RoaringBitmap.Create(1, 2, 3, 4, 5, 6, 7, 8, 9, 10,65533); 
+            Assert.True(rb.Contains(65533));
+        }
 
         [Fact]
         public void CardinalityOfEmptySet()

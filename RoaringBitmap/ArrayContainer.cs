@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Collections.Special
 {
@@ -66,6 +68,11 @@ namespace Collections.Special
             var cardinality = bc.FillArray(data);
             var result = new ArrayContainer(cardinality, data);
             return result;
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override bool Contains(ushort x)
+        {
+            return m_Content.Contains(x);
         }
 
         protected override bool EqualsInternal(Container other)

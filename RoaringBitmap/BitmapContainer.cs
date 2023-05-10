@@ -247,7 +247,7 @@ namespace Collections.Special
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Contains(ushort x)
+        public override bool Contains(ushort x)
         {
             return Contains(m_Bitmap, x);
         }

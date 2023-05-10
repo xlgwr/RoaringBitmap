@@ -64,7 +64,17 @@ namespace Collections.Special
         {
             return GetEnumerator();
         }
-
+        public bool Contains(int v)
+        {
+            var HighBits = Util.HighBits(v);
+            var LowBits = Util.LowBits(v);
+            var index = AdvanceUntil(HighBits, 0);
+            if (index <= 0)
+            {
+                return false;
+            }
+            return m_Values[index - 1].Contains(LowBits);
+        }
         public bool Equals(RoaringArray other)
         {
             if (ReferenceEquals(this, other))
@@ -297,7 +307,7 @@ namespace Collections.Special
             var oldIndex = 0;
             for (var i = 0; i < Container.MaxCapacity; i++)
             {
-                var ushortI = (ushort) i;
+                var ushortI = (ushort)i;
                 var index = Array.BinarySearch(x.m_Keys, oldIndex, x.m_Size - oldIndex, ushortI);
                 if (index < 0)
                 {
@@ -415,7 +425,7 @@ namespace Collections.Special
                     {
                         if (values[i].Equals(ArrayContainer.One) || values[i].Equals(BitmapContainer.One))
                         {
-                            bitmapOfRunContainers[i / 8] |= (byte) (1 << (i % 8));
+                            bitmapOfRunContainers[i / 8] |= (byte)(1 << (i % 8));
                         }
                     }
                     binaryWriter.Write(bitmapOfRunContainers);
@@ -429,7 +439,7 @@ namespace Collections.Special
                 for (var k = 0; k < size; ++k)
                 {
                     binaryWriter.Write(keys[k]);
-                    binaryWriter.Write((ushort) (values[k].Cardinality - 1));
+                    binaryWriter.Write((ushort)(values[k].Cardinality - 1));
                 }
                 if (!hasRun || (size >= NoOffsetThreshold))
                 {
@@ -448,9 +458,9 @@ namespace Collections.Special
                     {
                         if (ac.Equals(ArrayContainer.One))
                         {
-                            binaryWriter.Write((ushort) 1);
-                            binaryWriter.Write((ushort) 0);
-                            binaryWriter.Write((ushort) (Container.MaxSize - 1));
+                            binaryWriter.Write((ushort)1);
+                            binaryWriter.Write((ushort)0);
+                            binaryWriter.Write((ushort)(Container.MaxSize - 1));
                         }
                         else
                         {
@@ -461,9 +471,9 @@ namespace Collections.Special
                     {
                         if (bc.Equals(BitmapContainer.One))
                         {
-                            binaryWriter.Write((ushort) 1);
-                            binaryWriter.Write((ushort) 0);
-                            binaryWriter.Write((ushort) (Container.MaxCapacity - 1));
+                            binaryWriter.Write((ushort)1);
+                            binaryWriter.Write((ushort)0);
+                            binaryWriter.Write((ushort)(Container.MaxCapacity - 1));
                         }
                         else
                         {
@@ -498,7 +508,7 @@ namespace Collections.Special
                     throw new InvalidDataException("No RoaringBitmap file.");
                 }
                 var hasRun = lbcookie == SerialCookie;
-                var size = (int) (hasRun ? (cookie >> 16) + 1 : binaryReader.ReadUInt32());
+                var size = (int)(hasRun ? (cookie >> 16) + 1 : binaryReader.ReadUInt32());
                 var keys = new ushort[size];
                 var containers = new Container[size];
                 var cardinalities = new int[size];
@@ -556,7 +566,7 @@ namespace Collections.Special
                             }
                             for (int i = value; i < value + length + 1; i++)
                             {
-                                values.Add((ushort) i);
+                                values.Add((ushort)i);
                             }
                             count += length;
                         }

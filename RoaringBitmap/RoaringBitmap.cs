@@ -86,6 +86,47 @@ namespace Collections.Special
             return new RoaringBitmap(new RoaringArray(size, keys, containers));
         }
 
+
+        /// <summary>
+        ///     Creates a new immutable RoaringBitmap from an existing list of integers
+        /// </summary>
+        /// <param name="values">List of integers</param>
+        /// <returns>RoaringBitmap</returns>
+        public static RoaringBitmap Create(IEnumerable<int> values, ContainerType containerType)
+        {
+            var groupbyHb = values.Distinct().OrderBy(t => t).GroupBy(Util.HighBits).OrderBy(t => t.Key).ToList();
+            var keys = new List<ushort>();
+            var containers = new List<Container>();
+            var size = 0;
+            foreach (var group in groupbyHb)
+            {
+                keys.Add(group.Key);
+                switch (containerType)
+                {
+                    case ContainerType.ArrayContainer:
+                        containers.Add(ArrayContainer.Create(group.Select(Util.LowBits).ToArray()));
+                        break;
+                    case ContainerType.BitmapContainer:
+                        containers.Add(BitmapContainer.Create(group.Select(Util.LowBits).ToArray()));
+                        break;
+                    default:
+                    case ContainerType.Default:
+                        if (group.Count() > Container.MaxSize)
+                        {
+                            containers.Add(BitmapContainer.Create(group.Select(Util.LowBits).ToArray()));
+                        }
+                        else
+                        {
+                            containers.Add(ArrayContainer.Create(group.Select(Util.LowBits).ToArray()));
+                        }
+                        break;
+                }
+
+                size++;
+            }
+            return new RoaringBitmap(new RoaringArray(size, keys, containers));
+        }
+
         /// <summary>
         ///     Bitwise Or operation of two RoaringBitmaps
         /// </summary>
@@ -151,6 +192,10 @@ namespace Collections.Special
             return (13 ^ m_HighLowContainer.GetHashCode()) << 3;
         }
 
+        public bool Contains(int v)
+        {
+            return m_HighLowContainer.Contains(v);
+        }
         /// <summary>
         ///     Serializes a RoaringBitmap into a stream using the 'official' RoaringBitmap file format
         /// </summary>

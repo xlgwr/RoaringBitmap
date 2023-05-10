@@ -24,8 +24,8 @@ namespace Collections.Special
             }
             return EqualsInternal(other);
         }
-
         protected abstract bool EqualsInternal(Container other);
+        public abstract bool Contains(ushort x);
 
         public abstract IEnumerator<ushort> GetEnumerator();
 
@@ -39,13 +39,13 @@ namespace Collections.Special
             }
             if (xArrayContainer != null)
             {
-                return xArrayContainer | (BitmapContainer) y;
+                return xArrayContainer | (BitmapContainer)y;
             }
             if (yArrayContainer != null)
             {
-                return (BitmapContainer) x | yArrayContainer;
+                return (BitmapContainer)x | yArrayContainer;
             }
-            return (BitmapContainer) x | (BitmapContainer) y;
+            return (BitmapContainer)x | (BitmapContainer)y;
         }
 
         public static Container operator &(Container x, Container y)
@@ -58,13 +58,13 @@ namespace Collections.Special
             }
             if (xArrayContainer != null)
             {
-                return xArrayContainer & (BitmapContainer) y;
+                return xArrayContainer & (BitmapContainer)y;
             }
             if (yArrayContainer != null)
             {
-                return (BitmapContainer) x & yArrayContainer;
+                return (BitmapContainer)x & yArrayContainer;
             }
-            return (BitmapContainer) x & (BitmapContainer) y;
+            return (BitmapContainer)x & (BitmapContainer)y;
         }
 
         public static Container operator ^(Container x, Container y)
@@ -77,19 +77,19 @@ namespace Collections.Special
             }
             if (xArrayContainer != null)
             {
-                return xArrayContainer ^ (BitmapContainer) y;
+                return xArrayContainer ^ (BitmapContainer)y;
             }
             if (yArrayContainer != null)
             {
-                return (BitmapContainer) x ^ yArrayContainer;
+                return (BitmapContainer)x ^ yArrayContainer;
             }
-            return (BitmapContainer) x ^ (BitmapContainer) y;
+            return (BitmapContainer)x ^ (BitmapContainer)y;
         }
 
         public static Container operator ~(Container x)
         {
             var xArrayContainer = x as ArrayContainer;
-            return xArrayContainer != null ? ~xArrayContainer : ~(BitmapContainer) x;
+            return xArrayContainer != null ? ~xArrayContainer : ~(BitmapContainer)x;
         }
 
         public static Container AndNot(Container x, Container y)
@@ -102,13 +102,20 @@ namespace Collections.Special
             }
             if (xArrayContainer != null)
             {
-                return ArrayContainer.AndNot(xArrayContainer, (BitmapContainer) y);
+                return ArrayContainer.AndNot(xArrayContainer, (BitmapContainer)y);
             }
             if (yArrayContainer != null)
             {
-                return BitmapContainer.AndNot((BitmapContainer) x, yArrayContainer);
+                return BitmapContainer.AndNot((BitmapContainer)x, yArrayContainer);
             }
-            return BitmapContainer.AndNot((BitmapContainer) x, (BitmapContainer) y);
+            return BitmapContainer.AndNot((BitmapContainer)x, (BitmapContainer)y);
         }
+    }
+
+    public enum ContainerType
+    {
+        Default = 0,
+        ArrayContainer = 1,
+        BitmapContainer = 2,
     }
 }
