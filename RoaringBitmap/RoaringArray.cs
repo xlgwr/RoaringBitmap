@@ -75,11 +75,11 @@ namespace Collections.Special
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Contains(int v)
+        public bool Contains(int v, int hightIndex = -1)
         {
             var HighBits = Util.HighBits(v);
             var LowBits = Util.LowBits(v);
-            var index = GetIndex(HighBits);
+            var index = hightIndex > 0 ? hightIndex : GetIndex(HighBits);
             if (index < 0)
             {
                 return false;
@@ -643,11 +643,12 @@ namespace Collections.Special
         }
         #endregion
         #region Resize
-        /// <summary>
-        /// 不存在就扩大
-        /// </summary>
-        /// <param name="value"></param>
-        public void Set(int v)
+       /// <summary>
+       /// 设置,动态扩展
+       /// </summary>
+       /// <param name="v"></param>
+       /// <returns>返回高位index</returns>
+        public int Set(int v)
         {
             var HighBits = Util.HighBits(v);
             var LowBits = Util.LowBits(v);
@@ -655,21 +656,22 @@ namespace Collections.Special
             if (index < 0)
             {
                 //resize
-                Resize(HighBits, LowBits);
-                return;
+                return Resize(HighBits, LowBits);
             }
             //符值
             m_Values[index].Set(LowBits);
+            return index;
         }
-        void Resize(ushort h, ushort l)
+        int Resize(ushort h, ushort l)
         {
+            int index = m_Keys.Length; ;
             //copy key
-            ushort[] copy_Keys = new ushort[m_Keys.Length + 1];
+            ushort[] copy_Keys = new ushort[index + 1];
             //copy value
-            Container[] copy_value = new Container[m_Values.Length + 1];
+            Container[] copy_value = new Container[index + 1];
 
             //copy to
-            if (m_Keys.Length > 0)
+            if (index > 0)
             {
                 m_Keys.CopyTo(copy_Keys, 0);
                 m_Values.CopyTo(copy_value, 0);
@@ -690,9 +692,9 @@ namespace Collections.Special
             #endregion
 
             //set HighBits
-            copy_Keys[m_Keys.Length] = h;
+            copy_Keys[index] = h;
             //setValue
-            copy_value[m_Values.Length] = newContainer;
+            copy_value[index] = newContainer;
 
             //更新引用
             m_Keys = copy_Keys;
@@ -705,6 +707,7 @@ namespace Collections.Special
             //set size
             m_Size++;
 
+            return index;
         }
         #endregion
     }

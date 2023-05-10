@@ -195,14 +195,20 @@ namespace Collections.Special
             return (13 ^ m_HighLowContainer.GetHashCode()) << 3;
         }
 
-        public bool Contains(int v)
+        public bool Contains(int v, int hightIndex = -1)
         {
-            return m_HighLowContainer.Contains(v);
+            return m_HighLowContainer.Contains(v, hightIndex);
         }
         #region Get Set
-        public bool Get(int v)
+        /// <summary>
+        /// 是否存在,
+        /// </summary>
+        /// <param name="v">查询值</param>
+        /// <param name="hightIndex">高位索引</param>
+        /// <returns></returns>
+        public bool Get(int v, int hightIndex = -1)
         {
-            return m_HighLowContainer.Contains(v);
+            return m_HighLowContainer.Contains(v, hightIndex);
         }
         public void Set(int v)
         {
