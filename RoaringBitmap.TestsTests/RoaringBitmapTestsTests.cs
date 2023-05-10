@@ -30,7 +30,7 @@ namespace RoaringBitmap.Tests.Tests
         [TestMethod()]
         public void TestSetResize()
         {
-            var list = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 65533, 65577 };
+            var list = new List<int>() { 65536, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 65533, 65577 };
             var rb = Collections.Special.RoaringBitmap.Create(Collections.Special.ContainerType.BitmapContainer);
             foreach (var item in list)
             {

@@ -305,13 +305,26 @@ namespace Collections.Special
             var result = Array.BinarySearch(array, start, length - start, min);
             return result < 0 ? ~result : result;
         }
+        /// <summary>
+        /// 获取值对应index
+        /// </summary>
+        /// <param name="array"></param>
+        /// <param name="min"></param>
+        /// <param name="pos"></param>
+        /// <returns></returns>
         public static int GetIndex(ushort[] array, ushort min, int pos = 0)
         {
             if (array == null || array.Length <= 0 || pos > array.Length) return -1;
             if (pos < 0) pos = 0;
 
-            var result = Array.BinarySearch(array, pos, array.Length - pos, min);
-            return result;
+            for (int i = 0; i < array.Length - pos; i++)
+            {
+                if (array[i] == min)
+                {
+                    return i;
+                }
+            }
+            return -1;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ushort HighBits(int value)
