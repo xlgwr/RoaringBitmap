@@ -74,6 +74,7 @@ namespace UnitTesting
 
             stopwatch.Stop();
             Msg("SimpleRoaringBitmap:Contains", stopwatch.Elapsed);
+            stopwatch.Restart();
 
             var dic = new Dictionary<int, bool>();
             foreach (var item in list)
