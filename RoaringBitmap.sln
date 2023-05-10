@@ -8,7 +8,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoaringBitmap.Tests", "Roar
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoaringBitmap.Benchmark", "RoaringBitmap.Benchmark\RoaringBitmap.Benchmark.csproj", "{E3EBDDCA-BB6B-48B5-B00A-CF60B5FA4BFB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoaringBitmap.TestsTests", "RoaringBitmap.TestsTests\RoaringBitmap.TestsTests.csproj", "{56D5A5EB-F840-4649-842C-A9383A5F9B77}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTesting", "RoaringBitmap.TestsTests\UnitTesting.csproj", "{56D5A5EB-F840-4649-842C-A9383A5F9B77}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
