@@ -21,12 +21,15 @@ namespace System.Collections.Generic.Special
             }
             One = new BitmapContainer(1 << 16, data);
         }
+
         private BitmapContainer(ushort v)
         {
             m_Bitmap = new ulong[BitmapLength];
             m_Cardinality = 1;
-            m_Bitmap[v >> 6] = 1UL << v;
-
+            if (v > 0)
+            {
+                m_Bitmap[v >> 6] = 1UL << v;
+            }
         }
 
         private BitmapContainer(int cardinality)

@@ -17,10 +17,18 @@ namespace System.Collections.Generic.Special
 
         public SimpleRoaringArray(ContainerType containerType, int size = 0)
         {
+            this.containerType = containerType;
             m_Size = size;
             m_Keys = new ushort[m_Size];
             m_Values = new Container[m_Size];
-            this.containerType = containerType;
+            if (m_Size > 0)
+            {
+                for (int i = 0; i < m_Size; i++)
+                {
+                    m_Keys[i] = (ushort)i;
+                    m_Values[i] = NewContainer(0);
+                }
+            }
         }
 
         public SimpleRoaringArray(int size, ushort[] keys, Container[] containers)
@@ -68,10 +76,32 @@ namespace System.Collections.Generic.Special
                 return Resize(tmpLowHighBits.Item1, tmpLowHighBits.Item2);
             }
             //符值 low
-            m_Values[index].Set(tmpLowHighBits.Item1);
+            Container newContainer = m_Values[index];
+            if (newContainer == null)
+            {
+                newContainer = NewContainer(0);
+            }
+            newContainer.Set(tmpLowHighBits.Item1);
             return index;
         }
-        int Resize(ushort l, ushort h)
+        Container NewContainer(ushort low = 0)
+        {
+            #region Container
+            Container newContainer;
+            switch (this.containerType)
+            {
+                default:
+                case ContainerType.BitmapContainer:
+                    newContainer = BitmapContainer.Create(low);
+                    break;
+                case ContainerType.ArrayContainer:
+                    newContainer = ArrayContainer.Create(low);
+                    break;
+            }
+            #endregion
+            return newContainer;
+        }
+        int Resize(ushort low, ushort h)
         {
             int index = m_Keys.Length; ;
             //copy key
@@ -86,19 +116,7 @@ namespace System.Collections.Generic.Special
                 m_Values.CopyTo(copy_value, 0);
             }
 
-            #region Container
-            Container newContainer;
-            switch (containerType)
-            {
-                default:
-                case ContainerType.BitmapContainer:
-                    newContainer = BitmapContainer.Create(l);
-                    break;
-                case ContainerType.ArrayContainer:
-                    newContainer = ArrayContainer.Create(l);
-                    break;
-            }
-            #endregion
+            Container newContainer = NewContainer(low);
 
             //set HighBits
             copy_Keys[index] = h;
