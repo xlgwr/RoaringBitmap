@@ -5,13 +5,9 @@ using System.Runtime.CompilerServices;
 
 namespace System.Collections.Generic.Special
 {
-    internal class BitmapContainer : Container, IEquatable<BitmapContainer>
+    internal class BitmapContainer : SimpleBitmapContainer
     {
-        private const int BitmapLength = 1024;
         public static readonly BitmapContainer One;
-        private readonly ulong[] m_Bitmap;
-        private int m_Cardinality;
-
         static BitmapContainer()
         {
             var data = new ulong[BitmapLength];
@@ -21,27 +17,15 @@ namespace System.Collections.Generic.Special
             }
             One = new BitmapContainer(1 << 16, data);
         }
+        public BitmapContainer(ushort v) : base(v) { }
 
-        private BitmapContainer(ushort v)
+        private BitmapContainer(int cardinality) : base(0, cardinality)
         {
-            m_Bitmap = new ulong[BitmapLength];
-            m_Cardinality = 1;
-            if (v > 0)
-            {
-                m_Bitmap[v >> 6] = 1UL << v;
-            }
         }
 
-        private BitmapContainer(int cardinality)
+        private BitmapContainer(int cardinality, ulong[] data) : base(cardinality, data)
         {
-            m_Bitmap = new ulong[BitmapLength];
-            m_Cardinality = cardinality;
-        }
 
-        private BitmapContainer(int cardinality, ulong[] data)
-        {
-            m_Bitmap = data;
-            m_Cardinality = cardinality;
         }
 
         private BitmapContainer(int cardinality, ushort[] values, bool negated) : this(negated ? MaxCapacity - cardinality : cardinality)
@@ -66,38 +50,6 @@ namespace System.Collections.Generic.Special
                     m_Bitmap[v >> 6] |= 1UL << v;
                 }
             }
-        }
-
-        protected internal override int Cardinality => m_Cardinality;
-
-        public override int ArraySizeInBytes => MaxCapacity / 8;
-
-        public bool Equals(BitmapContainer other)
-        {
-            if (ReferenceEquals(this, other))
-            {
-                return true;
-            }
-            if (ReferenceEquals(null, other))
-            {
-                return false;
-            }
-            if (m_Cardinality != other.m_Cardinality)
-            {
-                return false;
-            }
-            for (var i = 0; i < BitmapLength; i++)
-            {
-                if (m_Bitmap[i] != other.m_Bitmap[i])
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-        internal static BitmapContainer Create(ushort v)
-        {
-            return new BitmapContainer(v);
         }
 
         internal static BitmapContainer Create(ushort[] values)
@@ -259,62 +211,6 @@ namespace System.Collections.Generic.Special
             return c;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override bool Get(ushort x)
-        {
-            return (m_Bitmap[x >> 6] & (1UL << x)) != 0;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override void Set(ushort v, bool value = true)
-        {
-            //值
-            if (value)
-            {
-                m_Bitmap[v >> 6] |= 1UL << v;
-                m_Cardinality++;
-            }
-            else
-            {
-                m_Bitmap[v >> 6] ^= 1UL << v;
-                m_Cardinality--;
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override bool Contains(ushort x)
-        {
-            return Contains(m_Bitmap, x);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool Contains(ulong[] bitmap, ushort x)
-        {
-            return (bitmap[x >> 6] & (1UL << x)) != 0;
-        }
-
-        protected override bool EqualsInternal(Container other)
-        {
-            var bc = other as BitmapContainer;
-            return (bc != null) && Equals(bc);
-        }
-
-        public override IEnumerator<ushort> GetEnumerator()
-        {
-            for (var k = 0; k < BitmapLength; k++)
-            {
-                var bitset = m_Bitmap[k];
-                var shiftedK = k << 6;
-                while (bitset != 0)
-                {
-                    var t = bitset & (~bitset + 1);
-                    var result = (ushort)(shiftedK + Util.BitCount(t - 1));
-                    yield return result;
-                    bitset ^= t;
-                }
-            }
-        }
-
         internal int FillArray(ushort[] data)
         {
             var pos = 0;
@@ -332,25 +228,7 @@ namespace System.Collections.Generic.Special
             return m_Cardinality;
         }
 
-        public override bool Equals(object obj)
-        {
-            var bc = obj as BitmapContainer;
-            return (bc != null) && Equals(bc);
-        }
 
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                var code = 17;
-                code = code * 23 + m_Cardinality;
-                for (var i = 0; i < BitmapLength; i++)
-                {
-                    code = code * 23 + m_Bitmap[i].GetHashCode();
-                }
-                return code;
-            }
-        }
 
         public static void Serialize(BitmapContainer bc, BinaryWriter binaryWriter)
         {

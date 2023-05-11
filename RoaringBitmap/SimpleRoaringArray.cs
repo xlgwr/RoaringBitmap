@@ -85,12 +85,17 @@ namespace System.Collections.Generic.Special
             Container newContainer;
             switch (this.containerType)
             {
-                default:
+                case ContainerType.SimpleBitmapContainer:
+                    newContainer = SimpleBitmapContainer.Create(low);
+                    break;
                 case ContainerType.BitmapContainer:
                     newContainer = BitmapContainer.Create(low);
                     break;
                 case ContainerType.ArrayContainer:
                     newContainer = ArrayContainer.Create(low);
+                    break;
+                default:
+                    newContainer = SimpleBitmapContainer.Create(low);
                     break;
             }
             #endregion

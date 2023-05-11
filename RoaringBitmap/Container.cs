@@ -119,5 +119,6 @@ namespace System.Collections.Generic.Special
         Default = 0,
         ArrayContainer = 1,
         BitmapContainer = 2,
+        SimpleBitmapContainer = 3,
     }
 }
