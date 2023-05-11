@@ -163,7 +163,7 @@ namespace UnitTesting
         static void Log2(int value)
         {
             var dd = Math.Log(value, 2);
-            Console.WriteLine($"{dd}:Round:{Math.Round(dd)},Floor:{Math.Floor(dd)}");
+            Console.WriteLine($"{value}->:{dd}:Round:{Math.Round(dd)},Floor:{Math.Floor(dd)}");
         }
         static void Msg(string msg, Stopwatch stopwatch, params object[] dd)
         {

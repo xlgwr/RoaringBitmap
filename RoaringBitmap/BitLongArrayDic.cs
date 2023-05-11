@@ -29,7 +29,11 @@ namespace System.Collections
         /// </summary>
         bool isIntMaxValue = false;
 
-        int LowModelLog2 = 31;
+        int hightBit = 31;
+        /// <summary>
+        /// ((1 << (31))-1)
+        /// </summary>
+        int lowBitMask = 0xFFF_FFFF;
 
         public static int concurrevel = Environment.ProcessorCount < 4 ? 2 : Environment.ProcessorCount / 2;
         /// <summary>
@@ -52,7 +56,8 @@ namespace System.Collections
             isIntMaxValue = LowMaxValue == int.MaxValue;
             if (!isIntMaxValue)
             {
-                LowModelLog2 = (int)Math.Round(Math.Log(LowMaxValue, 2));
+                hightBit = (int)Math.Round(Math.Log(LowMaxValue, 2));
+                lowBitMask = (int)((1 << (hightBit)) - 1);
             }
         }
         #region 倍数基础方法
@@ -65,7 +70,7 @@ namespace System.Collections
         public bool Get(long index)
         {
             //计算高位倍数
-            long getHightIndex = index >> LowModelLog2;
+            long getHightIndex = index >> hightBit;
 
             //是否有高位
             if (!TryGetValue(getHightIndex, out var currBit))
@@ -73,7 +78,7 @@ namespace System.Collections
                 return false;
             }
             //计算模
-            int lowModelIndex = (int)(index % LowModelValue);
+            int lowModelIndex = (int)(index & lowBitMask);
             return currBit.Get(lowModelIndex);
         }
         /// <summary>
@@ -101,16 +106,16 @@ namespace System.Collections
         public void Set(long index, bool value)
         {
             //高位/倍数
-            long getHightIndex = index >> LowModelLog2;
+            long getHightIndex = index >> hightBit;
 
             //是否存在低位bitarray
             if (!TryGetValue(getHightIndex, out var currBit))
             {
-                this[getHightIndex] = currBit = new BitArray(LowModelValue);
+                this[getHightIndex] = currBit = new BitArray(lowBitMask + 1);
             }
 
             //计算模
-            int lowModelIndex = (int)(index % LowModelValue);
+            int lowModelIndex = (int)(index & lowBitMask);
 
             currBit.Set(lowModelIndex, value);
         }
@@ -126,7 +131,7 @@ namespace System.Collections
             //是否存在低位bitarray
             if (!TryGetValue(getHightIndex, out var currBit))
             {
-                this[getHightIndex] = currBit = new BitArray(LowModelValue);
+                this[getHightIndex] = currBit = new BitArray(lowBitMask + 1);
             }
             currBit.Set(lowModelIndex, value);
         }
@@ -143,11 +148,13 @@ namespace System.Collections
         /// <exception cref="System.Exception"></exception>
         public static Tuple<long, int> GetHightModelIndex(long index, int modelValue)
         {
-            var tmplog2 = modelValue == int.MaxValue ? 31 : (int)Math.Round(Math.Log(modelValue, 2));
+            var tmpHightbit = modelValue == int.MaxValue ? 31 : (int)Math.Round(Math.Log(modelValue, 2));
 
-            long getHightIndex = index >> tmplog2;
+            var lowBitMask = (int)((1 << (tmpHightbit)) - 1);
 
-            int lowModelIndex = (int)(index % modelValue);
+            long getHightIndex = index >> tmpHightbit;
+
+            int lowModelIndex = (int)(index & lowBitMask);
 
             return new Tuple<long, int>(getHightIndex, lowModelIndex);
         }
@@ -170,7 +177,12 @@ namespace System.Collections
         /// 指数
         /// (int)Math.Round(Math.Log(LowModelValue, 2))
         /// </summary>
-        int LowModelLog2 = 31;
+        int hightBit = 31;
+
+        /// <summary>
+        /// ((1 << (31))-1)
+        /// </summary>
+        int lowBitMask = 0xFFF_FFFF;
         /// <summary>
         /// 
         /// 用于判断是否存在
@@ -193,9 +205,10 @@ namespace System.Collections
             isIntMaxValue = LowMaxValue == int.MaxValue;
             if (!isIntMaxValue)
             {
-                LowModelLog2 = (int)Math.Round(Math.Log(LowMaxValue, 2));
+                hightBit = (int)Math.Round(Math.Log(LowMaxValue, 2));
+                lowBitMask = (int)((1 << (hightBit)) - 1);
             }
-        }  
+        }
 
         #region 倍数基础方法
         /// <summary>
@@ -207,7 +220,7 @@ namespace System.Collections
         public bool Get(long index)
         {
             //计算高位倍数
-            long getHightIndex = index >> LowModelLog2;
+            long getHightIndex = index >> hightBit;
 
             //是否有高位
             if (!TryGetValue(getHightIndex, out var currBit))
@@ -215,7 +228,7 @@ namespace System.Collections
                 return false;
             }
             //计算模
-            int lowModelIndex = (int)(index % LowModelValue);
+            int lowModelIndex = (int)(index & lowBitMask);
             return currBit.Get(lowModelIndex);
         }
         /// <summary>
@@ -243,16 +256,16 @@ namespace System.Collections
         public void Set(long index, bool value)
         {
             //高位/倍数
-            long getHightIndex = index >> LowModelLog2;
+            long getHightIndex = index >> hightBit;
 
             //是否存在低位bitarray
             if (!TryGetValue(getHightIndex, out var currBit))
             {
-                this[getHightIndex] = currBit = new BitArray(LowModelValue);
+                this[getHightIndex] = currBit = new BitArray(lowBitMask + 1);
             }
 
             //计算模
-            int lowModelIndex = (int)(index % LowModelValue);
+            var lowModelIndex = (int)(index & lowBitMask);
 
             currBit.Set(lowModelIndex, value);
         }
@@ -268,7 +281,7 @@ namespace System.Collections
             //是否存在低位bitarray
             if (!TryGetValue(getHightIndex, out var currBit))
             {
-                this[getHightIndex] = currBit = new BitArray(LowModelValue);
+                this[getHightIndex] = currBit = new BitArray(lowBitMask + 1);
             }
             currBit.Set(lowModelIndex, value);
         }
@@ -285,11 +298,13 @@ namespace System.Collections
         /// <exception cref="System.Exception"></exception>
         public static Tuple<long, int> GetHightModelIndex(long index, int modelValue)
         {
-            var tmplog2 = modelValue == int.MaxValue ? 31 : (int)Math.Round(Math.Log(modelValue, 2));
+            var tmpHightbit = modelValue == int.MaxValue ? 31 : (int)Math.Round(Math.Log(modelValue, 2));
 
-            long getHightIndex = index >> tmplog2;
+            var lowBitMask = (int)((1 << (tmpHightbit)) - 1);
 
-            int lowModelIndex = (int)(index % modelValue);
+            long getHightIndex = index >> tmpHightbit;
+
+            int lowModelIndex = (int)(index & lowBitMask);
 
             return new Tuple<long, int>(getHightIndex, lowModelIndex);
         }
