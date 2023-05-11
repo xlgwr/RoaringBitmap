@@ -166,7 +166,10 @@ namespace System.Collections
         /// 低位，模数是否为int.MaxValue
         /// </summary>
         bool isIntMaxValue = false;
-
+        /// <summary>
+        /// 指数
+        /// (int)Math.Round(Math.Log(LowModelValue, 2))
+        /// </summary>
         int LowModelLog2 = 31;
         /// <summary>
         /// 
@@ -179,6 +182,8 @@ namespace System.Collections
         /// or
         /// 模值=100,000,000
         /// 最大长度17位十进制：19,999,050,800,000,001 / 100,000,000 = 19,999,0508
+        /// or
+        /// 求指数：(int)Math.Round(Math.Log(100,000,000, 2))
         /// </summary>
         /// <param name="maxValue"></param>
         /// <param name="LowMaxValue">模值int.MaxValue,小于65_536，直接为65_536 </param>
