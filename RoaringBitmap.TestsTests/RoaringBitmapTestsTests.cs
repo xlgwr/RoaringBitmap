@@ -88,13 +88,13 @@ namespace UnitTesting
 
             Msg($"{title}:ContainsKey", stopwatch); stopwatch.Restart();
 
+            title = "BitArray";
             var bitArr = new BitArray(max);
             foreach (var item in list)
             {
                 bitArr[item] = true;
             }
 
-            title = "BitArray";
             Msg(title, stopwatch, "Count:", bitArr.Count);
 
             Assert.IsTrue(bitArr[65533]);
@@ -103,6 +103,52 @@ namespace UnitTesting
 
             Msg($"{title}:ContainsKey", stopwatch);
         }
+
+        [TestMethod()]
+        public void TestBitLongArrayDic()
+        {
+            Stopwatch stopwatch = Stopwatch.StartNew();
+            var max = 12023051000000000;
+            var size = 100000000 * 2;
+            var random = new Random();
+            var list = GenLongList(max, size);
+            list.Add(65533);
+            list.Add(65577);
+
+            string title = "GenData";
+            Msg(title, stopwatch, ",max:", max, ",size:", size);
+
+            title = "BitLongArrayDic";
+            var bitArr = new BitLongArrayDic(100000000, 2);
+            foreach (var item in list)
+            {
+                bitArr.Set(item,true);
+            }
+
+            Msg(title, stopwatch, "Count:", bitArr.Count);
+
+            Assert.IsTrue(bitArr.Get(65533));
+            Assert.IsTrue(bitArr.Get(65577));
+            Assert.IsTrue(!bitArr.Get(65597*2));
+
+            Msg($"{title}:ContainsKey", stopwatch);
+
+            title = "Dictionary";
+            var dic = new Dictionary<long, bool>(size);
+            foreach (var item in list)
+            {
+                dic[item] = true;
+            }
+
+            Msg(title, stopwatch, "Count:", dic.Count);
+
+            Assert.IsTrue(dic.ContainsKey(65533));
+            Assert.IsTrue(dic.ContainsKey(65577));
+            Assert.IsTrue(!dic.ContainsKey(65597 * 2));
+
+            Msg($"{title}:ContainsKey", stopwatch); stopwatch.Restart();
+        }
+        #region time log msg
         static void Msg(string msg, Stopwatch stopwatch, params object[] dd)
         {
             stopwatch.Stop();
@@ -119,7 +165,17 @@ namespace UnitTesting
             }
             return str;
         }
+        #endregion
         #region other method
+        private static List<long> GenLongList(long minValue, int size = 1_000_000)
+        {
+            var result = new List<long>(size);
+            for (int i = 0; i < size; i++)
+            {
+                result.Add(minValue + i);
+            }
+            return result;
+        }
         private static List<int> CreateRandomList(Random random, int size, int maxValue = int.MaxValue)
         {
             if (maxValue < size)
