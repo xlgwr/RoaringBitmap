@@ -60,7 +60,7 @@ namespace UnitTesting
             Msg(title, stopwatch.Elapsed, ",max:", max, ",size:", size);
             stopwatch.Restart();
 
-            var rb = SimpleRoaringBitmap.Create(ContainerType.BitmapContainer, (max >> 16) + 1);
+            var rb = SimpleRoaringBitmap.Create(ContainerType.SimpleBitmapContainer, (max >> 16) + 1);
             foreach (var item in list)
             {
                 rb.Set(item);
