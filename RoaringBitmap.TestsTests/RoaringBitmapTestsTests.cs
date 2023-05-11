@@ -107,13 +107,22 @@ namespace UnitTesting
         [TestMethod()]
         public void TestBitLongArrayDic()
         {
+
             Stopwatch stopwatch = Stopwatch.StartNew();
             var max = 12023051000000000;
+            var addValue = 100000000;
             var size = 100000000 * 2;
             var random = new Random();
             var list = GenLongList(max, size);
             list.Add(65533);
             list.Add(65577);
+
+
+            var dd = Math.Log2(addValue);
+
+            Console.WriteLine(dd);
+            Console.WriteLine(Math.Round(dd));
+            Console.WriteLine(Math.Floor(dd));
 
             string title = "GenData";
             Msg(title, stopwatch, ",max:", max, ",size:", size);
@@ -122,14 +131,14 @@ namespace UnitTesting
             var bitArr = new BitLongArrayDic(100000000, 2);
             foreach (var item in list)
             {
-                bitArr.Set(item,true);
+                bitArr.Set(item, true);
             }
 
             Msg(title, stopwatch, "Count:", bitArr.Count);
 
             Assert.IsTrue(bitArr.Get(65533));
             Assert.IsTrue(bitArr.Get(65577));
-            Assert.IsTrue(!bitArr.Get(65597*2));
+            Assert.IsTrue(!bitArr.Get(65597 * 2));
 
             Msg($"{title}:ContainsKey", stopwatch);
 
