@@ -110,19 +110,11 @@ namespace UnitTesting
 
             Stopwatch stopwatch = Stopwatch.StartNew();
             var max = 12023051000000000;
-            var addValue = 65536;
             var size = 100000000 * 2;
             var random = new Random();
             var list = GenLongList(max, size);
             list.Add(65533);
             list.Add(65577);
-
-
-            var dd = Math.Log2(addValue);
-
-            Console.WriteLine(dd);
-            Console.WriteLine(Math.Round(dd));
-            Console.WriteLine(Math.Floor(dd));
 
             string title = "GenData";
             Msg(title, stopwatch, ",max:", max, ",size:", size);
