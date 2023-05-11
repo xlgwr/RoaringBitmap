@@ -110,7 +110,7 @@ namespace UnitTesting
 
             Stopwatch stopwatch = Stopwatch.StartNew();
             var max = 12023051000000000;
-            var addValue = 100000000;
+            var addValue = 65536;
             var size = 100000000 * 2;
             var random = new Random();
             var list = GenLongList(max, size);

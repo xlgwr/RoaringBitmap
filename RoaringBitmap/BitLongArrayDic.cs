@@ -155,6 +155,7 @@ namespace System.Collections
         /// </summary>
         bool isIntMaxValue = false;
 
+        int LowModelLog2 = 31;
         /// <summary>
         /// 
         /// 用于判断是否存在
@@ -168,11 +169,15 @@ namespace System.Collections
         /// 最大长度17位十进制：19,999,050,800,000,001 / 100,000,000 = 19,999,0508
         /// </summary>
         /// <param name="maxValue"></param>
-        /// <param name="LowMaxValue">模值int.MaxValue</param>
+        /// <param name="LowMaxValue">模值int.MaxValue,小于65_536，直接为65_536 </param>
         public BitLongArrayDic(int LowMaxValue = int.MaxValue, int Capacity = 2) : base(Capacity)
         {
-            this.LowModelValue = LowMaxValue;
+            this.LowModelValue = LowMaxValue < 65_536 ? 65_536 : LowMaxValue;
             isIntMaxValue = LowMaxValue == int.MaxValue;
+            if (!isIntMaxValue)
+            {
+                LowModelLog2 = (int)Math.Round(Math.Log(LowMaxValue, 2));
+            }
         }
         #region 倍数基础方法
         /// <summary>
@@ -184,7 +189,7 @@ namespace System.Collections
         public bool Get(long index)
         {
             //计算高位倍数
-            long getHightIndex = isIntMaxValue ? (index >> 31) : (index / LowModelValue);
+            long getHightIndex = index >> LowModelLog2;
 
             //是否有高位
             if (!TryGetValue(getHightIndex, out var currBit))
@@ -220,7 +225,7 @@ namespace System.Collections
         public void Set(long index, bool value)
         {
             //高位/倍数
-            long getHightIndex = isIntMaxValue ? (index >> 31) : (index / LowModelValue);
+            long getHightIndex = index >> LowModelLog2;
 
             //是否存在低位bitarray
             if (!TryGetValue(getHightIndex, out var currBit))
@@ -260,9 +265,11 @@ namespace System.Collections
         /// <param name="index"></param>
         /// <returns></returns>
         /// <exception cref="System.Exception"></exception>
-        public static Tuple<long, int> GetHightModelIndex(long index, int modelValue, bool isIntMax = false)
+        public static Tuple<long, int> GetHightModelIndex(long index, int modelValue)
         {
-            long getHightIndex = isIntMax ? (index >> 31) : (index / modelValue);
+            var tmplog2 = modelValue == int.MaxValue ? 31 : (int)Math.Round(Math.Log(modelValue, 2));
+
+            long getHightIndex = index >> tmplog2;
 
             int lowModelIndex = (int)(index % modelValue);
 
