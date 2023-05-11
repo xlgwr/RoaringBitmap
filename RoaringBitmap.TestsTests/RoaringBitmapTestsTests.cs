@@ -56,9 +56,7 @@ namespace UnitTesting
             list.Add(65577);
 
             string title = "GenData";
-            stopwatch.Stop();
-            Msg(title, stopwatch.Elapsed, ",max:", max, ",size:", size);
-            stopwatch.Restart();
+            Msg(title, stopwatch, ",max:", max, ",size:", size);
 
             var rb = SimpleRoaringBitmap.Create(ContainerType.SimpleBitmapContainer, (max >> 16) + 1);
             foreach (var item in list)
@@ -66,18 +64,14 @@ namespace UnitTesting
                 rb.Set(item);
             }
 
-            stopwatch.Stop();
             title = "SimpleRoaringBitmap";
-            Msg(title, stopwatch.Elapsed);
-            stopwatch.Restart();
+            Msg(title, stopwatch);
 
             Assert.IsTrue(rb.Contains(65533));
             Assert.IsTrue(rb.Contains(65577));
             Assert.IsTrue(!rb.Contains(65597 * 2));
 
-            stopwatch.Stop();
-            Msg($"{title}:Contains", stopwatch.Elapsed);
-            stopwatch.Restart();
+            Msg($"{title}:Contains", stopwatch);
 
             var dic = new Dictionary<int, bool>();
             foreach (var item in list)
@@ -85,17 +79,14 @@ namespace UnitTesting
                 dic[item] = true;
             }
 
-            stopwatch.Stop();
             title = "Dictionary";
-            Msg(title, stopwatch.Elapsed, "Count:", dic.Count);
-            stopwatch.Restart();
+            Msg(title, stopwatch, "Count:", dic.Count);
 
             Assert.IsTrue(dic.ContainsKey(65533));
             Assert.IsTrue(dic.ContainsKey(65577));
             Assert.IsTrue(!dic.ContainsKey(65597 * 2));
 
-            stopwatch.Stop();
-            Msg($"{title}:ContainsKey", stopwatch.Elapsed); stopwatch.Restart();
+            Msg($"{title}:ContainsKey", stopwatch); stopwatch.Restart();
 
             var bitArr = new BitArray(max);
             foreach (var item in list)
@@ -103,21 +94,21 @@ namespace UnitTesting
                 bitArr[item] = true;
             }
 
-            stopwatch.Stop();
             title = "BitArray";
-            Msg(title, stopwatch.Elapsed, "Count:", bitArr.Count);
-            stopwatch.Restart();
+            Msg(title, stopwatch, "Count:", bitArr.Count);
 
             Assert.IsTrue(bitArr[65533]);
             Assert.IsTrue(bitArr[65577]);
             Assert.IsTrue(!bitArr[65597 * 2]);
 
-            stopwatch.Stop();
-            Msg($"{title}:ContainsKey", stopwatch.Elapsed);
+            Msg($"{title}:ContainsKey", stopwatch);
         }
-        static void Msg(string msg, TimeSpan timeSpan, params object[] dd)
+        static void Msg(string msg, Stopwatch stopwatch, params object[] dd)
         {
-            Console.WriteLine($"{msg}:{timeSpan},Other:{toStr(dd)}");
+            stopwatch.Stop();
+            Console.WriteLine($"{msg}:{stopwatch.Elapsed},Other:{toStr(dd)}");
+            stopwatch.Restart();
+
         }
         static string toStr(object[] dd)
         {
