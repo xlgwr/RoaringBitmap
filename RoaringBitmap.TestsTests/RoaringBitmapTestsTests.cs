@@ -116,6 +116,11 @@ namespace UnitTesting
             list.Add(65533);
             list.Add(65577);
 
+            //test log 2
+            var addValue = 65536;
+            Log2(addValue);
+            Log2(100000000);
+
             string title = "GenData";
             Msg(title, stopwatch, ",max:", max, ",size:", size);
 
@@ -150,6 +155,11 @@ namespace UnitTesting
             Msg($"{title}:ContainsKey", stopwatch); stopwatch.Restart();
         }
         #region time log msg
+        static void Log2(int value)
+        {
+            var dd = Math.Log(value, 2);
+            Console.WriteLine($"{dd}:Round:{Math.Round(dd)},Floor:{Math.Floor(dd)}");
+        }
         static void Msg(string msg, Stopwatch stopwatch, params object[] dd)
         {
             stopwatch.Stop();
