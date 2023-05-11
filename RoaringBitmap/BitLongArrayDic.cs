@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,13 +21,15 @@ namespace System.Collections
     public class ConcurrentBitLongArrayDic : ConcurrentDictionary<long, BitArray>
     {
         /// <summary>
-        /// 低位，模数 65535 8k 2^16
+        /// 低位，模数
         /// </summary>
         int LowModelValue = int.MaxValue;
         /// <summary>
         /// 低位，模数是否为int.MaxValue
         /// </summary>
         bool isIntMaxValue = false;
+
+        int LowModelLog2 = 31;
 
         public static int concurrevel = Environment.ProcessorCount < 4 ? 2 : Environment.ProcessorCount / 2;
         /// <summary>
@@ -44,8 +48,12 @@ namespace System.Collections
         /// <param name="LowMaxValue">模值int.MaxValue</param>
         public ConcurrentBitLongArrayDic(int LowMaxValue = int.MaxValue, int Capacity = 2) : base(concurrevel, Capacity)
         {
-            this.LowModelValue = LowMaxValue;
+            this.LowModelValue = LowMaxValue < 65_536 ? 65_536 : LowMaxValue;
             isIntMaxValue = LowMaxValue == int.MaxValue;
+            if (!isIntMaxValue)
+            {
+                LowModelLog2 = (int)Math.Round(Math.Log(LowMaxValue, 2));
+            }
         }
         #region 倍数基础方法
         /// <summary>
@@ -57,7 +65,7 @@ namespace System.Collections
         public bool Get(long index)
         {
             //计算高位倍数
-            long getHightIndex = isIntMaxValue ? (index >> 31) : (index / LowModelValue);
+            long getHightIndex = index >> LowModelLog2;
 
             //是否有高位
             if (!TryGetValue(getHightIndex, out var currBit))
@@ -93,7 +101,7 @@ namespace System.Collections
         public void Set(long index, bool value)
         {
             //高位/倍数
-            long getHightIndex = isIntMaxValue ? (index >> 31) : (index / LowModelValue);
+            long getHightIndex = index >> LowModelLog2;
 
             //是否存在低位bitarray
             if (!TryGetValue(getHightIndex, out var currBit))
@@ -133,9 +141,11 @@ namespace System.Collections
         /// <param name="index"></param>
         /// <returns></returns>
         /// <exception cref="System.Exception"></exception>
-        public static Tuple<long, int> GetHightModelIndex(long index, int modelValue, bool isIntMax = false)
+        public static Tuple<long, int> GetHightModelIndex(long index, int modelValue)
         {
-            long getHightIndex = isIntMax ? (index >> 31) : (index / modelValue);
+            var tmplog2 = modelValue == int.MaxValue ? 31 : (int)Math.Round(Math.Log(modelValue, 2));
+
+            long getHightIndex = index >> tmplog2;
 
             int lowModelIndex = (int)(index % modelValue);
 
@@ -143,6 +153,8 @@ namespace System.Collections
         }
         #endregion
     }
+
+
 
     public class BitLongArrayDic : Dictionary<long, BitArray>
     {
@@ -178,7 +190,8 @@ namespace System.Collections
             {
                 LowModelLog2 = (int)Math.Round(Math.Log(LowMaxValue, 2));
             }
-        }
+        }  
+
         #region 倍数基础方法
         /// <summary>
         ///  是否存在,不知高位倍数
