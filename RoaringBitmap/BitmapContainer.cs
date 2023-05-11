@@ -268,26 +268,15 @@ namespace System.Collections.Generic.Special
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override void Set(ushort v, bool value = true)
         {
-            var index = v >> 6;
-            var valueV = 1UL << v;
-
             //值
             if (value)
             {
-                m_Bitmap[index] |= valueV;
-            }
-            else
-            {
-                m_Bitmap[index] ^= valueV;
-            }
-
-            //计数
-            if ((m_Bitmap[index] & valueV) != 0)
-            {
+                m_Bitmap[v >> 6] |= 1UL << v;
                 m_Cardinality++;
             }
             else
             {
+                m_Bitmap[v >> 6] ^= 1UL << v;
                 m_Cardinality--;
             }
         }

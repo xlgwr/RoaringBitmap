@@ -76,12 +76,7 @@ namespace System.Collections.Generic.Special
                 return Resize(tmpLowHighBits.Item1, tmpLowHighBits.Item2);
             }
             //符值 low
-            Container newContainer = m_Values[index];
-            if (newContainer == null)
-            {
-                newContainer = NewContainer(0);
-            }
-            newContainer.Set(tmpLowHighBits.Item1);
+            m_Values[index].Set(tmpLowHighBits.Item1);
             return index;
         }
         Container NewContainer(ushort low = 0)
