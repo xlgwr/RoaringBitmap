@@ -109,12 +109,14 @@ namespace UnitTesting
         {
 
             Stopwatch stopwatch = Stopwatch.StartNew();
-            var max = 12023051000000000;
-            var size = 100000000 * 2;
+            var max1 = 120230510_00_000_000;
+            var max2 = 120230511_00_000_001;
+            var size = 1_00_000_000 * 3;
             var random = new Random();
-            var list = GenLongList(max, size);
+            var list = GenLongList(max1, size);
             list.Add(65533);
             list.Add(65577);
+            //list.Add(max2);
 
             //test log 2
             var addValue = 65536;
@@ -122,7 +124,7 @@ namespace UnitTesting
             Log2(100000000);
 
             string title = "GenData";
-            Msg(title, stopwatch, ",max:", max, ",size:", size);
+            Msg(title, stopwatch, ",max:", max1, ",size:", size);
 
             title = "BitLongArrayDic";
             var bitArr = new BitLongArrayDic(100000000, 2);
@@ -136,6 +138,9 @@ namespace UnitTesting
             Assert.IsTrue(bitArr.Get(65533));
             Assert.IsTrue(bitArr.Get(65577));
             Assert.IsTrue(!bitArr.Get(65597 * 2));
+
+            Assert.IsTrue(bitArr.Get(max1 + 1));
+            Assert.IsTrue(bitArr.Get(max2));
 
             Msg($"{title}:ContainsKey", stopwatch);
 
