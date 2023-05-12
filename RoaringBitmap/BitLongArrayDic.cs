@@ -14,11 +14,11 @@ namespace System.Collections
     public class ConcurrentBitLongArrayDic : ConcurrentDictionary<long, BitArray>
     {
         /// <summary>
-        /// 低位，模数
+        /// 低位，低位数
         /// </summary>
         int LowModelValue = int.MaxValue;
         /// <summary>
-        /// 低位，模数是否为int.MaxValue
+        /// 低位，低位数是否为int.MaxValue
         /// </summary>
         bool isIntMaxValue = false;
 
@@ -39,7 +39,7 @@ namespace System.Collections
         ///   value:取long值低位，如：120230511_00_000_001  & ((1 << 27)-1)
         /// </summary>
         /// <param name="maxValue"></param>
-        /// <param name="LowMaxValue">模值int.MaxValue</param>
+        /// <param name="LowMaxValue">低位值int.MaxValue</param>
         public ConcurrentBitLongArrayDic(int LowMaxValue = int.MaxValue, int Capacity = 2) : base(concurrevel, Capacity)
         {
             this.LowModelValue = LowMaxValue < 65_536 ? 65_536 : LowMaxValue;
@@ -50,16 +50,16 @@ namespace System.Collections
                 lowBitMask = (int)((1 << (hightBit)) - 1);
             }
         }
-        #region 倍数基础方法
+        #region 基础方法
         /// <summary>
-        ///  是否存在,不知高位倍数
+        ///  是否存在,不知高位
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Get(long index)
         {
-            //计算高位倍数
+            //计算高位
             long getHightIndex = index >> hightBit;
 
             //是否有高位
@@ -67,14 +67,14 @@ namespace System.Collections
             {
                 return false;
             }
-            //计算模
+            //计算低位
             int lowModelIndex = (int)(index & lowBitMask);
             return currBit.Get(lowModelIndex);
         }
         /// <summary>
-        /// 是否存在,已知高位倍数
+        /// 是否存在,已知高位
         /// </summary>
-        /// <param name="getHightIndex">高位，倍数</param>
+        /// <param name="getHightIndex">高位，</param>
         /// <param name="lowModelIndex"></param>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -88,37 +88,37 @@ namespace System.Collections
             return currBit.Get(lowModelIndex);
         }
         /// <summary>
-        /// 赋值，不知高位倍数
+        /// 赋值，不知高位
         /// </summary>
         /// <param name="index"></param>
         /// <param name="value"></param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Set(long index, bool value)
         {
-            //高位/倍数
+            //高位
             long getHightIndex = index >> hightBit;
 
-            //是否存在低位bitarray
+            //是否存在高位
             if (!TryGetValue(getHightIndex, out var currBit))
             {
                 this[getHightIndex] = currBit = new BitArray(lowBitMask + 1);
             }
 
-            //计算模
+            //计算低位
             int lowModelIndex = (int)(index & lowBitMask);
 
             currBit.Set(lowModelIndex, value);
         }
 
         /// <summary>
-        /// 赋值，已知高位倍数
+        /// 赋值，已知高位
         /// </summary>
         /// <param name="index"></param>
         /// <param name="value"></param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Set(long getHightIndex, int lowModelIndex, bool value)
         {
-            //是否存在低位bitarray
+            //是否存在搞位
             if (!TryGetValue(getHightIndex, out var currBit))
             {
                 this[getHightIndex] = currBit = new BitArray(lowBitMask + 1);
@@ -129,7 +129,7 @@ namespace System.Collections
         #region state method
 
         /// <summary>
-        /// 计算倍数，及模
+        /// 计算高位及低位
         /// int,int
         /// HightIndex,LowModelIndex
         /// </summary>
@@ -156,11 +156,11 @@ namespace System.Collections
     public class BitLongArrayDic : Dictionary<long, BitArray>
     {
         /// <summary>
-        /// 低位，模数
+        /// 低位，低位数
         /// </summary>
         int LowModelValue = int.MaxValue;
         /// <summary>
-        /// 低位，模数是否为int.MaxValue
+        /// 低位，低位数是否为int.MaxValue
         /// </summary>
         bool isIntMaxValue = false;
         /// <summary>
@@ -184,7 +184,7 @@ namespace System.Collections
         ///   value:取long值低位，如：120230511_00_000_001  & ((1 << 27)-1)
         /// </summary>
         /// <param name="maxValue"></param>
-        /// <param name="LowMaxValue">模值int.MaxValue,小于65_536，直接为65_536 </param>
+        /// <param name="LowMaxValue">低位值int.MaxValue,小于65_536，直接为65_536 </param>
         public BitLongArrayDic(int LowMaxValue = int.MaxValue, int Capacity = 2) : base(Capacity)
         {
             this.LowModelValue = LowMaxValue < 65_536 ? 65_536 : LowMaxValue;
@@ -196,16 +196,16 @@ namespace System.Collections
             }
         }
 
-        #region 倍数基础方法
+        #region 基础方法
         /// <summary>
-        ///  是否存在,不知高位倍数
+        ///  是否存在,不知高位
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Get(long index)
         {
-            //计算高位倍数
+            //计算高位
             long getHightIndex = index >> hightBit;
 
             //是否有高位
@@ -213,14 +213,14 @@ namespace System.Collections
             {
                 return false;
             }
-            //计算模
+            //计算低位
             int lowModelIndex = (int)(index & lowBitMask);
             return currBit.Get(lowModelIndex);
         }
         /// <summary>
-        /// 是否存在,已知高位倍数
+        /// 是否存在,已知高位
         /// </summary>
-        /// <param name="getHightIndex">高位，倍数</param>
+        /// <param name="getHightIndex">高位，</param>
         /// <param name="lowModelIndex"></param>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -234,14 +234,14 @@ namespace System.Collections
             return currBit.Get(lowModelIndex);
         }
         /// <summary>
-        /// 赋值，不知高位倍数
+        /// 赋值，不知高位
         /// </summary>
         /// <param name="index"></param>
         /// <param name="value"></param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Set(long index, bool value)
         {
-            //高位/倍数
+            //高位
             long getHightIndex = index >> hightBit;
 
             //是否存在低位bitarray
@@ -250,7 +250,7 @@ namespace System.Collections
                 this[getHightIndex] = currBit = new BitArray(lowBitMask + 1);
             }
 
-            //计算模
+            //计算
             var lowModelIndex = (int)(index & lowBitMask);
 
             currBit.Set(lowModelIndex, value);
@@ -265,14 +265,14 @@ namespace System.Collections
         }
 
         /// <summary>
-        /// 赋值，已知高位倍数
+        /// 赋值，已知高位
         /// </summary>
         /// <param name="index"></param>
         /// <param name="value"></param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Set(long getHightIndex, int lowModelIndex, bool value)
         {
-            //是否存在低位bitarray
+            //是否存在高位
             if (!TryGetValue(getHightIndex, out var currBit))
             {
                 this[getHightIndex] = currBit = new BitArray(lowBitMask + 1);
@@ -296,7 +296,7 @@ namespace System.Collections
         #region state method
 
         /// <summary>
-        /// 计算倍数，及模
+        /// 计算高位及低位
         /// int,int
         /// HightIndex,LowModelIndex
         /// </summary>
