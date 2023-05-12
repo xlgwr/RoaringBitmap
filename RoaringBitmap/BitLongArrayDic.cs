@@ -14,11 +14,11 @@ namespace System.Collections
     public class ConcurrentBitLongArrayDic : ConcurrentDictionary<long, BitArray>
     {
         /// <summary>
-        /// 低位，低位数
+        /// 低位数
         /// </summary>
         int LowModelValue = int.MaxValue;
         /// <summary>
-        /// 低位，低位数是否为int.MaxValue
+        /// 低位数是否为int.MaxValue
         /// </summary>
         bool isIntMaxValue = false;
 
@@ -156,11 +156,11 @@ namespace System.Collections
     public class BitLongArrayDic : Dictionary<long, BitArray>
     {
         /// <summary>
-        /// 低位，低位数
+        /// 低位数
         /// </summary>
         int LowModelValue = int.MaxValue;
         /// <summary>
-        /// 低位，低位数是否为int.MaxValue
+        /// 低位数是否为int.MaxValue
         /// </summary>
         bool isIntMaxValue = false;
         /// <summary>
