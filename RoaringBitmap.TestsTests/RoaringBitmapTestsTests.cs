@@ -124,7 +124,7 @@ namespace UnitTesting
             Log2(100000000);
 
             string title = "GenData";
-            Msg(title, stopwatch, ",max:", max1, ",size:", size);
+            Msg(title, stopwatch, ",min:", max1, ",size:", size);
 
             title = "BitLongArrayDic";
             var bitArr = new BitLongArrayDic(100000000, 2);
