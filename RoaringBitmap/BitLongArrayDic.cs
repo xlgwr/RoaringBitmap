@@ -34,9 +34,9 @@ namespace System.Collections
         /// 原理：long的高位做为key,低位为value
         ///  例子：变化范围(int)：0->1_00_000_000 , 
         ///   高位移位：2的指数，向上取整：27=Math.Ceiling(Math.Log(1_00_000_000, 2))
-        ///   低位掩码：((1 << (27))-1)
+        ///   低位掩码：((1 << 27)-1)
         ///   key:取long值高位，如：120230511_00_000_001 >> 27
-        ///   value:取long值低位，如：120230511_00_000_001  & ((1 << (27))-1)
+        ///   value:取long值低位，如：120230511_00_000_001  & ((1 << 27)-1)
         /// </summary>
         /// <param name="maxValue"></param>
         /// <param name="LowMaxValue">模值int.MaxValue</param>
@@ -179,9 +179,9 @@ namespace System.Collections
         /// 原理：long的高位做为key,低位为value
         ///  例子：变化范围(int)：0->1_00_000_000 , 
         ///   高位移位：2的指数，向上取整：27=Math.Ceiling(Math.Log(1_00_000_000, 2))
-        ///   低位掩码：((1 << (27))-1)
+        ///   低位掩码：((1 << 27)-1)
         ///   key:取long值高位，如：120230511_00_000_001 >> 27
-        ///   value:取long值低位，如：120230511_00_000_001  & ((1 << (27))-1)
+        ///   value:取long值低位，如：120230511_00_000_001  & ((1 << 27)-1)
         /// </summary>
         /// <param name="maxValue"></param>
         /// <param name="LowMaxValue">模值int.MaxValue,小于65_536，直接为65_536 </param>
