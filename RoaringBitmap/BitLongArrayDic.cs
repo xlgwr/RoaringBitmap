@@ -10,14 +10,7 @@ using System.Threading.Tasks;
 
 namespace System.Collections
 {
-    /// <summary>
-    /// BitArray扩展long
-    /// int32,8*4 32位 正整数：2^31-1=2,147,483,647 Int32.MaxValue 10位
-    /// long,16*4 64位 正整数：2^63-1=9,223,372,036,854,775,807 long.MaxValue 19位
-    /// 分界值int32位最大正数：如上
-    /// 高位：右移31位 L >> 31
-    /// 求模值BitArray:L % Int32.MaxValue
-    /// </summary>
+  
     public class ConcurrentBitLongArrayDic : ConcurrentDictionary<long, BitArray>
     {
         /// <summary>
@@ -37,16 +30,13 @@ namespace System.Collections
 
         public static int concurrevel = Environment.ProcessorCount < 4 ? 2 : Environment.ProcessorCount / 2;
         /// <summary>
-        /// 
         /// 用于判断是否存在
-        /// 
-        /// 初始化，长度 右移 31 得高位倍数值
-        /// 模值=2,147,483,647 Int32.MaxValue
-        /// 如:
-        /// 最大长度为17位十进制：19,999,050,800,000,001 >> 31 = 9,312,783
-        /// or
-        /// 模值=100,000,000
-        /// 最大长度17位十进制：19,999,050,800,000,001 / 100,000,000 = 19,999,0508
+        /// 原理：long的高位做为key,低位为value
+        ///  例子：变化范围(int)：0->1_00_000_000 , 
+        ///   高位移位：2的指数，向上取整：27=Math.Ceiling(Math.Log(1_00_000_000, 2))
+        ///   低位掩码：((1 << (27))-1)
+        ///   key:取long值高位，如：120230511_00_000_001 >> 27
+        ///   value:取long值低位，如：120230511_00_000_001  & ((1 << (27))-1)
         /// </summary>
         /// <param name="maxValue"></param>
         /// <param name="LowMaxValue">模值int.MaxValue</param>
@@ -56,7 +46,7 @@ namespace System.Collections
             isIntMaxValue = LowMaxValue == int.MaxValue;
             if (!isIntMaxValue)
             {
-                hightBit = (int)Math.Round(Math.Log(LowMaxValue, 2));
+                hightBit = (int)Math.Ceiling(Math.Log(LowMaxValue, 2));
                 lowBitMask = (int)((1 << (hightBit)) - 1);
             }
         }
@@ -148,7 +138,7 @@ namespace System.Collections
         /// <exception cref="System.Exception"></exception>
         public static Tuple<long, int> GetHightModelIndex(long index, int modelValue)
         {
-            var tmpHightbit = modelValue == int.MaxValue ? 31 : (int)Math.Round(Math.Log(modelValue, 2));
+            var tmpHightbit = modelValue == int.MaxValue ? 31 : (int)Math.Ceiling(Math.Log(modelValue, 2));
 
             var lowBitMask = (int)((1 << (tmpHightbit)) - 1);
 
@@ -174,28 +164,24 @@ namespace System.Collections
         /// </summary>
         bool isIntMaxValue = false;
         /// <summary>
-        /// 指数
-        /// (int)Math.Round(Math.Log(LowModelValue, 2))
+        /// 高位移位
+        /// (int)Math.Ceiling(Math.Log(LowModelValue, 2))
         /// </summary>
         int hightBit = 31;
 
         /// <summary>
         /// ((1 << (31))-1)
+        /// 低位掩码，默认0xFFF_FFFF
         /// </summary>
         int lowBitMask = 0xFFF_FFFF;
         /// <summary>
-        /// 
         /// 用于判断是否存在
-        /// 
-        /// 初始化，长度 右移 31 得高位倍数值
-        /// 模值=2,147,483,647 Int32.MaxValue
-        /// 如:
-        /// 最大长度为17位十进制：19,999,050,800,000,001 >> 31 = 9,312,783
-        /// or
-        /// 模值=100,000,000
-        /// 最大长度17位十进制：19,999,050,800,000,001 / 100,000,000 = 19,999,0508
-        /// or
-        /// 求指数：(int)Math.Round(Math.Log(100,000,000, 2))
+        /// 原理：long的高位做为key,低位为value
+        ///  例子：变化范围(int)：0->1_00_000_000 , 
+        ///   高位移位：2的指数，向上取整：27=Math.Ceiling(Math.Log(1_00_000_000, 2))
+        ///   低位掩码：((1 << (27))-1)
+        ///   key:取long值高位，如：120230511_00_000_001 >> 27
+        ///   value:取long值低位，如：120230511_00_000_001  & ((1 << (27))-1)
         /// </summary>
         /// <param name="maxValue"></param>
         /// <param name="LowMaxValue">模值int.MaxValue,小于65_536，直接为65_536 </param>
@@ -205,7 +191,7 @@ namespace System.Collections
             isIntMaxValue = LowMaxValue == int.MaxValue;
             if (!isIntMaxValue)
             {
-                hightBit = (int)Math.Round(Math.Log(LowMaxValue, 2));
+                hightBit = (int)Math.Ceiling(Math.Log(LowMaxValue, 2));
                 lowBitMask = (int)((1 << (hightBit)) - 1);
             }
         }
@@ -298,7 +284,7 @@ namespace System.Collections
         /// <exception cref="System.Exception"></exception>
         public static Tuple<long, int> GetHightModelIndex(long index, int modelValue)
         {
-            var tmpHightbit = modelValue == int.MaxValue ? 31 : (int)Math.Round(Math.Log(modelValue, 2));
+            var tmpHightbit = modelValue == int.MaxValue ? 31 : (int)Math.Ceiling(Math.Log(modelValue, 2));
 
             var lowBitMask = (int)((1 << (tmpHightbit)) - 1);
 
