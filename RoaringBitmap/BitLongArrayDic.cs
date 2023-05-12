@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace System.Collections
 {
-  
+
     public class ConcurrentBitLongArrayDic : ConcurrentDictionary<long, BitArray>
     {
         /// <summary>
@@ -254,6 +254,14 @@ namespace System.Collections
             var lowModelIndex = (int)(index & lowBitMask);
 
             currBit.Set(lowModelIndex, value);
+            if (value)
+            {
+                max_bitlength++;
+            }
+            else
+            {
+                max_bitlength--;
+            }
         }
 
         /// <summary>
@@ -270,8 +278,21 @@ namespace System.Collections
                 this[getHightIndex] = currBit = new BitArray(lowBitMask + 1);
             }
             currBit.Set(lowModelIndex, value);
+            if (value)
+            {
+                max_bitlength++;
+            }
+            else
+            {
+                max_bitlength--;
+            }
         }
+        long max_bitlength = 0;
         #endregion
+        public long GetBitLength
+        {
+            get { return max_bitlength; }
+        }
         #region state method
 
         /// <summary>

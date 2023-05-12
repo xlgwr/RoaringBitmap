@@ -133,7 +133,7 @@ namespace UnitTesting
                 bitArr.Set(item, true);
             }
 
-            Msg(title, stopwatch, "Count:", bitArr.Count);
+            Msg(title, stopwatch, "DicCount:", bitArr.Count, ",bitLength:", bitArr.GetBitLength);
 
             Assert.IsTrue(bitArr.Get(65533));
             Assert.IsTrue(bitArr.Get(65577));
