@@ -126,29 +126,7 @@ namespace System.Collections
             currBit.Set(lowModelIndex, value);
         }
         #endregion
-        #region state method
-
-        /// <summary>
-        /// 计算高位及低位
-        /// int,int
-        /// HightIndex,LowModelIndex
-        /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        /// <exception cref="System.Exception"></exception>
-        public static Tuple<long, int> GetHightModelIndex(long index, int modelValue)
-        {
-            var tmpHightbit = modelValue == int.MaxValue ? 31 : (int)Math.Ceiling(Math.Log(modelValue, 2));
-
-            var lowBitMask = (int)((1 << (tmpHightbit)) - 1);
-
-            long getHightIndex = index >> tmpHightbit;
-
-            int lowModelIndex = (int)(index & lowBitMask);
-
-            return new Tuple<long, int>(getHightIndex, lowModelIndex);
-        }
-        #endregion
+        //end
     }
 
 
@@ -292,29 +270,8 @@ namespace System.Collections
         public long GetBitLength
         {
             get { return max_bitlength; }
-        }
-        #region state method
+        } 
 
-        /// <summary>
-        /// 计算高位及低位
-        /// int,int
-        /// HightIndex,LowModelIndex
-        /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        /// <exception cref="System.Exception"></exception>
-        public static Tuple<long, int> GetHightModelIndex(long index, int modelValue)
-        {
-            var tmpHightbit = modelValue == int.MaxValue ? 31 : (int)Math.Ceiling(Math.Log(modelValue, 2));
-
-            var lowBitMask = (int)((1 << (tmpHightbit)) - 1);
-
-            long getHightIndex = index >> tmpHightbit;
-
-            int lowModelIndex = (int)(index & lowBitMask);
-
-            return new Tuple<long, int>(getHightIndex, lowModelIndex);
-        }
-        #endregion
+        //end
     }
 }

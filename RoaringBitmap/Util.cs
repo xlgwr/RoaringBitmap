@@ -409,5 +409,30 @@ namespace System.Collections.Generic.Special
                 }
             }
         }
+
+        #region state method
+
+        /// <summary>
+        /// 计算高位及低位
+        /// int,int
+        /// HightIndex,LowModelIndex
+        /// 高位移位：2的指数，向上取整：27=Math.Ceiling(Math.Log(1_00_000_000, 2))
+        /// 低位掩码：((1 << 27)-1)
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public static Tuple<long, int> GetHightModelIndex(this long index, int lowBitMaxValue)
+        {
+            var tmpHightbit = lowBitMaxValue == int.MaxValue ? 31 : (int)Math.Ceiling(Math.Log(lowBitMaxValue, 2));
+
+            var lowBitMask = (int)((1 << (tmpHightbit)) - 1);
+
+            long getHightIndex = index >> tmpHightbit;
+
+            int lowModelIndex = (int)(index & lowBitMask);
+
+            return new Tuple<long, int>(getHightIndex, lowModelIndex);
+        }
+        #endregion
     }
 }
